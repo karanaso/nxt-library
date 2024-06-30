@@ -1,6 +1,6 @@
 import { Link, Outlet, Route, Routes } from 'react-router-dom';
-import { ListMembers } from './containers/ListMember';
-import { EditMember } from './pages/editMember';
+import { ListMembers } from './containers/ListMembers';
+import { EditMember } from './pages/EditMember';
 
 const NoMatch = () => <div>No match</div>
 const Home = () => <div>Home</div>

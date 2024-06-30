@@ -21,9 +21,6 @@ function Layout() {
           <li>
             <Link to="/list-members">Members</Link>
           </li>
-          <li>
-            <Link to="/nothing-here">Nothing Here</Link>
-          </li>
         </ul>
       </nav>
 
@@ -58,7 +55,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="list-members" element={<ListMembers />} />
-          <Route path="members" element={<EditMember />} />
+          <Route path="members/:id" element={<EditMember />} />
 
           {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit

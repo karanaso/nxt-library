@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 
 import './index.css';
+import { CssBaseline } from "@mui/material";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,6 +13,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <BrowserRouter>
+   <CssBaseline />
     <App />
   </BrowserRouter>
 );

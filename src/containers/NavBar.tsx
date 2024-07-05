@@ -24,11 +24,11 @@ const routes = [
     title: 'Members',
   },
   {
-    path: '/pricing',
-    title: 'Pricing',
+    path: '/books',
+    title: 'Books',
   }
 ]
-const pages = ['Members', 'Pricing', 'Blog'];
+
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {

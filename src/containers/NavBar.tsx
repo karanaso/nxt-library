@@ -26,6 +26,10 @@ const routes = [
   {
     path: '/books',
     title: 'Books',
+  },
+  {
+    path: '/transactions',
+    title: 'Transactions',
   }
 ]
 

@@ -18,7 +18,6 @@ export const EditBook = () => {
   const [pages, setPages] = useState(0);
   const [snackBarOpen, setSnackBarOpen] = useState(true);
 
-  const action = () => alert('should do something')
   const handleSnackBarClose = () => setSnackBarOpen(false)
 
   useEffect(() => {
@@ -88,17 +87,6 @@ export const EditBook = () => {
         date={dayjs(dateOfPublish) || dayjs()}
         setDate={date => setDateOfPublish(date)}
         label="Publish Date"
-      />
-      <TextField
-        id="outlined-basic"
-        value={dateOfPublish}
-        label="Publish Date"
-        variant="outlined"
-        type="datetime"
-        onChange={(e) => {
-          console.log(e.target);
-          // setDateOfPublish(new Date(e.target.value))
-        }}
       />
       <TextField
         id="outlined-basic"

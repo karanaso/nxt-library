@@ -21,7 +21,7 @@ export const EditTransaction = () => {
   const [memberId, setMemberId] = useState('');;
   const [bookId, setBookId] = useState('');
 
-  const cancel = () => alert('cancel');
+  const cancel = () => navigate(-1);
 
   useEffect(() => {
     if ((params.id) && (params.id !== 'new')) load({ id: params.id })

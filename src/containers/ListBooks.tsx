@@ -73,7 +73,7 @@ export const ListBooks = () => {
             { field: 'title', headerName: 'Title', width: 130 },
             { field: 'authors', headerName: 'Authors', width: 130 },
             { field: 'dateOfPublish', headerName: 'Date of publish', width: 130 },
-            { field: 'pages', headerName: 'No. Pages', width: 130 },
+            { field: 'pages', headerName: 'No. Pages', align: 'center', headerAlign: 'center', width: 130 },
             {
               field: 'options',
               headerName: '',

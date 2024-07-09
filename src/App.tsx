@@ -4,6 +4,8 @@ import { EditMember } from './containers/EditMember';
 import ResponsiveAppBar from './containers/NavBar';
 import { EditBook } from './containers/EditBook';
 import { ListBooks } from './containers/ListBooks';
+import { ListTransactions } from './containers/ListTransactions';
+import { EditTransaction } from './containers/EditTransaction';
 
 const NoMatch = () => <div>No match</div>
 const Home = () => <div>Home</div>
@@ -26,6 +28,8 @@ function App() {
         <Route path="members/:id" element={<EditMember />} />
         <Route path="books/" element={<ListBooks />} />
         <Route path="books/:id" element={<EditBook />} />
+        <Route path="transactions/" element={<ListTransactions />} />
+        <Route path="transactions/:id" element={<EditTransaction />} />
         <Route path="*" element={<NoMatch />} />
       </Route>
     </Routes>

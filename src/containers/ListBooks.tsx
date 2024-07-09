@@ -4,15 +4,28 @@ import { TBook, TBooks } from "../types/books";
 import { Add, Delete, Edit, PlusOne } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { DataTable } from "../components/DataTable";
+import { fetchBooks } from "../helpers/http";
+import { useQuery } from "@tanstack/react-query";
 
 export const ListBooks = () => {
-  const [books, seTBooks] = useState<TBooks>([]);
+  const [books, setBooks] = useState<TBooks>([]);
+
+  const {isPending, isError, data, error} = useQuery({
+    queryKey: ['books'],
+    queryFn: fetchBooks
+  });
 
   useEffect(() => {
-    fetch('http://localhost:3000/library/books')
-      .then(response => response.json())
-      .then(data => seTBooks(data))
-  }, []);
+    if (data) setBooks(data);
+  }, [data]);
+
+  if (isPending) {
+    return <span>Loading...</span>
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>
+  }
 
   const handleRowClick = (params:any) => {
     const clickedRowId = params.id;

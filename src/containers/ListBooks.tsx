@@ -76,12 +76,17 @@ export const ListBooks = () => {
             { field: 'pages', headerName: 'No. Pages', width: 130 },
             {
               field: 'options',
-              headerName: 'Options',
+              headerName: '',
+              headerAlign: 'right',
+              flex: 1,
+              align: 'right',
               renderCell: (params) => (
                 <Box
                   sx={{
                     display: "flex",
                     flexDirection: "row",
+                    justifyContent: 'flex-end',
+                    width: '100%',
                     gap: 1,
                   }}
                 >

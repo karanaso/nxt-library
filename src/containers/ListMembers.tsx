@@ -6,6 +6,7 @@ import { Add, Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { DataTable } from "../components/DataTable";
 import { fetchMembers } from '../helpers/http';
+import { LoadingState } from '../components/LoadingBackdrop';
 
 export const ListMembers = () => {
   const [members, setMembers] = useState<TMembers>([]);
@@ -19,9 +20,7 @@ export const ListMembers = () => {
     if (data) setMembers(data);
   }, [data]);
 
-  if (isPending) {
-    return <span>Loading...</span>
-  }
+  if (isPending) return <LoadingState />
 
   if (isError) {
     return <span>Error: {error.message}</span>

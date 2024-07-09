@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { DataTable } from "../components/DataTable";
 import { fetchBooks } from "../helpers/http";
 import { useQuery } from "@tanstack/react-query";
+import { LoadingState } from "../components/LoadingBackdrop";
 
 export const ListBooks = () => {
   const [books, setBooks] = useState<TBooks>([]);
@@ -19,9 +20,7 @@ export const ListBooks = () => {
     if (data) setBooks(data);
   }, [data]);
 
-  if (isPending) {
-    return <span>Loading...</span>
-  }
+  if (isPending) return <LoadingState />
 
   if (isError) {
     return <span>Error: {error.message}</span>

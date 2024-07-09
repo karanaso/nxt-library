@@ -10,7 +10,7 @@ import { TBook } from "../types/books";
 import dayjs from "dayjs";
 import 'dayjs/locale/el';
 import { DataTable } from "../components/DataTable";
-import { isMemberName } from "typescript";
+import { LoadingState } from "../components/LoadingBackdrop";
 
 export const ListTransactions = () => {
   const [transactions, setTransactions] = useState<TTransactions>([]);
@@ -54,6 +54,8 @@ export const ListTransactions = () => {
     // You can navigate to another page, open a modal, etc.
   };
 
+  if (_transactions.isPending) return <LoadingState />;
+  
   return (
     <div>
       <Box

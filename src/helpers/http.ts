@@ -1,42 +1,32 @@
+import { url } from "inspector";
+
 export const conf = {
   booksUrl: 'http://localhost:1337/api/books',
   membersUrl: 'http://localhost:1337/api/members',
   transactionsUrl: 'http://localhost:1337/api/transactions',
 }
 
-export const transactions = {
+export const apiFactory = (url:string) => ({
   fetch: () =>
-    fetch(conf.transactionsUrl)
+    fetch(url)
       .then(response => response.json())
       .then(data => {
         return data.data.map((d: any) => ({
           id: d.id,
           ...d.attributes
         }));
-      })
-  ,
-}
-
-export const books = {
-  fetch: () =>
-    fetch(conf.booksUrl)
-      .then(response => response.json())
-      .then(data => {
-        return data.data.map((d: any) => ({
-          id: d.id,
-          ...d.attributes
-        }));
-      })
-  ,
-}
-
-export const members = {
-  fetch: () => fetch(conf.membersUrl)
+      }),
+  getById: (id: string) => fetch(`${url}/${id}`)
     .then(response => response.json())
     .then(data => {
-      return data.data.map((d: any) => ({
-        id: d.id,
-        ...d.attributes
-      }));
+      return {
+        id: data.data.id,
+        ...data.data.attributes
+      };
     })
-};
+  ,
+})
+
+export const members = apiFactory(conf.membersUrl);
+export const books = apiFactory(conf.booksUrl);
+export const transactions = apiFactory(conf.transactionsUrl); 

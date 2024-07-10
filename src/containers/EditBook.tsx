@@ -1,11 +1,10 @@
-import { Alert, Box, Button, FormGroup, IconButton, Snackbar, TextField } from "@mui/material"
+import { Box, Button, TextField } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { DatePicker } from "../components/DatePicker";
+import { books as booksHttp } from "../helpers/http";
 import dayjs from "dayjs";
-import { Close } from "@mui/icons-material";
 
-let url = 'http://localhost:1337/api/books';
 let navigatePage = '/books';
 
 export const EditBook = () => {
@@ -16,50 +15,30 @@ export const EditBook = () => {
   const [authors, setAuthors] = useState('');
   const [dateOfPublish, setDateOfPublish] = useState(new Date().toISOString());
   const [pages, setPages] = useState(0);
-  const [snackBarOpen, setSnackBarOpen] = useState(true);
-
-  const handleSnackBarClose = () => setSnackBarOpen(false)
 
   useEffect(() => {
     if ((params.id) && (params.id !== 'new')) load({ id: params.id })
   }, [params.id])
 
-  const load = ({ id }: { id: string }) => fetch(`${url}/${id}`)
-    .then(r => r.ok && r.json())
+  const load = ({ id }: { id: string }) => booksHttp.getById(id)
     .then(d => {
-      setTitle(d.data.attributes.title);
-      setAuthors(d.data.attributes.authors);
-      setDateOfPublish(d.data.attributes.dateOfPublish);
-      setPages(d.data.attributes.pages);
+      setTitle(d.title);
+      setAuthors(d.authors);
+      setDateOfPublish(d.dateOfPublish);
+      setPages(d.pages);
     })
 
-  const save = () => {
-    let myUrl = url;
-    let method = 'POST';
-
-    if ((params.id) && (params.id !== 'new')) {
-      myUrl += `/${params.id}`;
-      method = 'PUT';
+  const save = () => booksHttp.save({
+    id: params.id, data: {
+      title,
+      authors,
+      dateOfPublish,
+      pages
     }
-
-    fetch(myUrl, {
-      method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        data: {
-          title,
-          authors,
-          dateOfPublish,
-          pages
-        }
-      })
-    }).then(() => {
-      setSnackBarOpen(true);
-      navigate(navigatePage)
-    });
-  }
+  }).then(() => {
+    alert('Successfully updated');
+    navigate(navigatePage)
+  });
 
   const cancel = () => navigate(-1);
 
@@ -112,23 +91,7 @@ export const EditBook = () => {
         <Button variant="contained" color="warning" onClick={cancel}>Cancel</Button>
         <Button variant="contained" color="primary" onClick={save}>Save</Button>
       </Box>
-      <Snackbar
-        open={snackBarOpen}
-        autoHideDuration={60000}
-        color="success"
-        onClose={handleSnackBarClose}
-        message="Succesfully saved"
-        action={
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleSnackBarClose}
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        }
-      />
+
     </Box>
   )
 }

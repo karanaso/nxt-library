@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { DatePicker } from "../components/DatePicker"
-import dayjs from "dayjs";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { TMembers } from "../types/members";
 import { TBooks } from "../types/books";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { 
-  conf,
+import {
   members as memberHttp,
   books as booksHttp,
+  transactions as transactionsHttp,
 } from "../helpers/http";
+import dayjs from "dayjs";
 
 let navigatePage = '/transactions';
 
@@ -38,68 +38,36 @@ export const EditTransaction = () => {
     queryFn: memberHttp.fetch
   });
 
-  const load = ({ id }: { id: string }) => fetch(`${conf.transactionsUrl}/${id}`)
-    .then(r => r.ok && r.json())
+  const load = ({ id }: { id: string }) => transactionsHttp.getById(id)
     .then(d => {
-      setBookId(d[0].bookId);
-      setMemberId(d[0].memberId);
-      setDateOfTransaction(d[0].dateOfTransaction);
-      setDateOfReturn(d[0].dateOfReturn);
+      setBookId(d.bookId);
+      setMemberId(d.memberId);
+      setDateOfTransaction(d.dateOfTransaction);
+      setDateOfReturn(d.dateOfReturn);
     })
 
-  const save = () => {
-    let myUrl = conf.transactionsUrl;
-    let method = 'POST';
-
-    if ((params.id) && (params.id !== 'new')) {
-      myUrl += `/${params.id}`;
-      method = 'PUT';
+  const save = () => transactionsHttp.save({
+    id: params.id, data: {
+      bookId,
+      memberId,
+      dateOfTransaction,
+      dateOfReturn
     }
-
-    fetch(myUrl, {
-      method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        data: {
-          bookId,
-          memberId,
-          dateOfTransaction,
-          dateOfReturn
-        }
-      })
-    }).then(() => {
-      // setSnackBarOpen(true);
-      // navigate(navigatePage)
-    });
-  }
+  }).then(() => {
+    alert('Successfully updated');
+    navigate(navigatePage)
+  });
 
   useEffect(() => {
     if ((params.id) && (params.id !== 'new')) load({ id: params.id })
   }, [params.id])
 
   useEffect(() => {
-    if (_books.data) {
-      setBooks(
-        _books.data.data.map((i: any) => ({
-          id: i.id,
-          ...i.attributes
-        }))
-      );
-    }
+    if (_books.data) setBooks(_books.data);
   }, [_books.data])
 
   useEffect(() => {
-    console.log(_members.data)
-    if (_members.data.data) {
-      setMembers(
-        _members.data.data.map((i: any) => ({
-          id: i.id,
-          ...i.attributes
-        }))
-      );
-    } 
+    if (_members.data) setMembers(_members.data);
   }, [_members.data])
 
   return (
@@ -130,7 +98,12 @@ export const EditTransaction = () => {
           onChange={e => setMemberId(e.target.value)}
         >
           {members.map(m => (
-            <MenuItem value={m.id}>{m.firstName} {m.lastName}</MenuItem>
+            <MenuItem 
+              key={m.id}
+              value={m.id}
+            >
+              {m.firstName} {m.lastName}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
@@ -145,7 +118,7 @@ export const EditTransaction = () => {
           onChange={e => setBookId(e.target.value)}
         >
           {books.map(b => (
-            <MenuItem value={b.id}>
+            <MenuItem key={b.id} value={b.id}>
               {b.title}
               {b.authors}
             </MenuItem>

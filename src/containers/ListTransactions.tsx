@@ -40,11 +40,13 @@ export const ListTransactions = () => {
 
 
   const findMemberById = ({ id }: { id: string }) => {
+    if (!members.data) return 'Loading...';
     const member: TMember = members.data.find((m: TMember) => m.id.toString() === id);    
     return member.firstName + ' ' + member.lastName;
   };
 
   const findBookById = ({ id }: { id: string }) => {
+    if (!books.data) return 'Loading...';
     const book:TBook = books.data.find((book:TBook) => book.id.toString() === id);
     return book.title;
   };

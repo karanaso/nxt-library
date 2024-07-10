@@ -4,11 +4,9 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 export const DataTable = ({
   rows = [],
   columns = [],
-  onRowClick = () => {},
 }:{
   rows: any[],
   columns: GridColDef[]
-  onRowClick: (params: any) => void
 }) => {
   return (
     <div>

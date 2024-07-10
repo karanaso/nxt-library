@@ -1,5 +1,5 @@
 export type TTransaction = {
-    _id: string;
+    id: string;
     bookId: string;
     memberId: string;
     dateOfTransaction: string;

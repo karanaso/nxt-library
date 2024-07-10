@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { Box, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { TMember, TMembers } from "../types/members";
+import { TMembers } from "../types/members";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { DataTable } from "../components/DataTable";
-import { fetchMembers } from '../helpers/http';
+import { members as membersHttp } from '../helpers/http';
 import { LoadingState } from '../components/LoadingBackdrop';
 
 export const ListMembers = () => {
@@ -13,7 +13,7 @@ export const ListMembers = () => {
   
   const {isPending, isError, data, error} = useQuery({
     queryKey: ['members'],
-    queryFn: fetchMembers
+    queryFn: membersHttp.fetch
   });
 
   useEffect(() => {
@@ -25,15 +25,6 @@ export const ListMembers = () => {
   if (isError) {
     return <span>Error: {error.message}</span>
   }
-
-  const handleRowClick = (params:any) => {
-    const clickedRowId = params.id;
-    const clickedRowData = params.row;
-  
-    // Perform your desired action here based on the clicked row data
-    console.log("Row clicked:", clickedRowId, clickedRowData);
-    // You can navigate to another page, open a modal, etc.
-  };
 
   return (
     <div>
@@ -62,7 +53,7 @@ export const ListMembers = () => {
         </Box>
         <DataTable
           rows={members.map(m => ({
-            id: m._id,
+            id: m.id,
             firstName: m.firstName,
             lastName: m.lastName,
             phoneNumber: m.phoneNumber,
@@ -72,7 +63,7 @@ export const ListMembers = () => {
             { field: 'firstName', headerName: 'First name', width: 130 },
             { field: 'lastName', headerName: 'Last name', width: 130 },
             { field: 'phoneNumber', headerName: 'Phone number', width: 130 },
-            { field: 'email', headerName: 'E-mail', width: 130 },
+            { field: 'email', headerName: 'E-mail', width: 230 },
             {
               field: 'options',
               headerName: '',
@@ -101,7 +92,6 @@ export const ListMembers = () => {
               )
             }
           ]}
-          onRowClick={handleRowClick}
         />
       </Box>
     </div>

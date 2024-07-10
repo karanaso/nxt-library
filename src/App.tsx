@@ -6,6 +6,7 @@ import { EditBook } from './containers/EditBook';
 import { ListBooks } from './containers/ListBooks';
 import { ListTransactions } from './containers/ListTransactions';
 import { EditTransaction } from './containers/EditTransaction';
+import { Login } from './containers/Login';
 
 const NoMatch = () => <div>No match</div>
 const Home = () => <div>Home</div>
@@ -24,6 +25,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="login" element={<Login />} />
         <Route path="members" element={<ListMembers />} />
         <Route path="members/:id" element={<EditMember />} />
         <Route path="books/" element={<ListBooks />} />

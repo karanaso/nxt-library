@@ -1,6 +1,7 @@
 import { Box, Button, TextField } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { conf } from "../helpers/http";
 
 export const EditMember = () => {
   const params = useParams();
@@ -15,19 +16,20 @@ export const EditMember = () => {
     if (params.id) load({ id: params.id })
   }, [params.id])
 
-  const load = ({id}:{id:string}) => fetch(`http://localhost:3000/library/members/${id}`)
+  const load = ({ id }: { id: string }) => fetch(conf.membersUrl + `/${id}`)
     .then(r => r.ok && r.json())
     .then(d => {
-      setFirstName(d[0].firstName);
-      setLastName(d[0].lastName);
-      setPhoneNumber(d[0].phoneNumber);
-      setEmail(d[0].email);
+      console.log('----', d);
+      setFirstName(d.data.attributes.firstName);
+      setLastName(d.data.attributes.lastName);
+      setPhoneNumber(d.data.attributes.phoneNumber);
+      setEmail(d.data.attributes.email);
     })
 
   const save = () => {
-    let url = 'http://localhost:3000/library/members';
+    let url = conf.membersUrl;
     let method = 'POST';
-    
+
     if (params.id) {
       url += `/${params.id}`;
       method = 'PUT';
@@ -35,11 +37,16 @@ export const EditMember = () => {
 
     fetch(url, {
       method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
-        firstName,
-        lastName,
-        phoneNumber,
-        email
+        data: {
+          firstName,
+          lastName,
+          phoneNumber,
+          email
+        }
       })
     }).then(() => navigate('/members'));
   }

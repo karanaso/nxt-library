@@ -5,8 +5,13 @@ import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/mat
 import { TMembers } from "../types/members";
 import { TBooks } from "../types/books";
 import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { 
+  conf,
+  members as memberHttp,
+  books as booksHttp,
+} from "../helpers/http";
 
-let url = 'http://localhost:3000/library/transactions';
 let navigatePage = '/transactions';
 
 export const EditTransaction = () => {
@@ -23,11 +28,17 @@ export const EditTransaction = () => {
 
   const cancel = () => navigate(-1);
 
-  useEffect(() => {
-    if ((params.id) && (params.id !== 'new')) load({ id: params.id })
-  }, [params.id])
+  const _books = useQuery({
+    queryKey: ['books'],
+    queryFn: booksHttp.fetch
+  });
 
-  const load = ({ id }: { id: string }) => fetch(`${url}/${id}`)
+  const _members = useQuery({
+    queryKey: ['members'],
+    queryFn: memberHttp.fetch
+  });
+
+  const load = ({ id }: { id: string }) => fetch(`${conf.transactionsUrl}/${id}`)
     .then(r => r.ok && r.json())
     .then(d => {
       setBookId(d[0].bookId);
@@ -37,7 +48,7 @@ export const EditTransaction = () => {
     })
 
   const save = () => {
-    let myUrl = url;
+    let myUrl = conf.transactionsUrl;
     let method = 'POST';
 
     if ((params.id) && (params.id !== 'new')) {
@@ -47,29 +58,49 @@ export const EditTransaction = () => {
 
     fetch(myUrl, {
       method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
-        bookId,
-        memberId,
-        dateOfTransaction,
-        dateOfReturn
+        data: {
+          bookId,
+          memberId,
+          dateOfTransaction,
+          dateOfReturn
+        }
       })
     }).then(() => {
       // setSnackBarOpen(true);
-      navigate(navigatePage)
+      // navigate(navigatePage)
     });
   }
 
-
+  useEffect(() => {
+    if ((params.id) && (params.id !== 'new')) load({ id: params.id })
+  }, [params.id])
 
   useEffect(() => {
-    fetch('http://localhost:3000/library/members')
-      .then(r => r.ok && r.json())
-      .then(d => setMembers(d))
+    if (_books.data) {
+      setBooks(
+        _books.data.data.map((i: any) => ({
+          id: i.id,
+          ...i.attributes
+        }))
+      );
+    }
+  }, [_books.data])
 
-    fetch('http://localhost:3000/library/books')
-      .then(r => r.ok && r.json())
-      .then(d => setBooks(d))
-  }, []);
+  useEffect(() => {
+    console.log(_members.data)
+    if (_members.data.data) {
+      setMembers(
+        _members.data.data.map((i: any) => ({
+          id: i.id,
+          ...i.attributes
+        }))
+      );
+    } 
+  }, [_members.data])
 
   return (
     <Box
@@ -99,7 +130,7 @@ export const EditTransaction = () => {
           onChange={e => setMemberId(e.target.value)}
         >
           {members.map(m => (
-            <MenuItem value={m._id}>{m.firstName} {m.lastName}</MenuItem>
+            <MenuItem value={m.id}>{m.firstName} {m.lastName}</MenuItem>
           ))}
         </Select>
       </FormControl>
@@ -114,7 +145,7 @@ export const EditTransaction = () => {
           onChange={e => setBookId(e.target.value)}
         >
           {books.map(b => (
-            <MenuItem value={b._id}>
+            <MenuItem value={b.id}>
               {b.title}
               {b.authors}
             </MenuItem>

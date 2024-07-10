@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { TTransactions, TTransaction } from "../types/transactions";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { fetchBooks, fetchMembers, fetchTransactions } from "../helpers/http";
 import { useQuery } from "@tanstack/react-query";
 import { TMember } from "../types/members";
 import { TBook } from "../types/books";
@@ -11,51 +10,47 @@ import dayjs from "dayjs";
 import 'dayjs/locale/el';
 import { DataTable } from "../components/DataTable";
 import { LoadingState } from "../components/LoadingBackdrop";
+import {
+  members as memberHttp,
+  books as booksHttp,
+  transactions as transactionHttp,
+} from "../helpers/http";
 
 export const ListTransactions = () => {
   const [transactions, setTransactions] = useState<TTransactions>([]);
 
   const _transactions = useQuery({
     queryKey: ['transactions'],
-    queryFn: fetchTransactions
+    queryFn: transactionHttp.fetch
   });
 
   const books = useQuery({
     queryKey: ['books'],
-    queryFn: fetchBooks
+    queryFn: booksHttp.fetch
   });
 
   const members = useQuery({
     queryKey: ['members'],
-    queryFn: fetchMembers
+    queryFn: memberHttp.fetch
   });
 
   useEffect(() => {
-    if (_transactions.data) setTransactions(_transactions.data);
+    if (_transactions.data)setTransactions(_transactions.data);
   }, [_transactions.data]);
-  
 
-  const findMemberById = ({id}:{id: string}) => {
-    const member:TMember = members.data.find((member:TMember) => member._id === id);
-    return member.firstName+' '+member.lastName;
+
+  const findMemberById = ({ id }: { id: string }) => {
+    const member: TMember = members.data.find((m: TMember) => m.id.toString() === id);    
+    return member.firstName + ' ' + member.lastName;
   };
 
-  const findBookById = ({id}:{id: string}) => {
-    const book:TBook = books.data.find((book:TBook) => book._id === id);
+  const findBookById = ({ id }: { id: string }) => {
+    const book:TBook = books.data.find((book:TBook) => book.id.toString() === id);
     return book.title;
   };
 
-  const handleRowClick = (params:any) => {
-    const clickedRowId = params.id;
-    const clickedRowData = params.row;
-  
-    // Perform your desired action here based on the clicked row data
-    console.log("Row clicked:", clickedRowId, clickedRowData);
-    // You can navigate to another page, open a modal, etc.
-  };
-
   if (_transactions.isPending) return <LoadingState />;
-  
+
   return (
     <div>
       <Box
@@ -75,7 +70,7 @@ export const ListTransactions = () => {
             alignItems: "center",
           }}
         >
-          <h1>List transactions (total: {transactions.length})</h1>
+          {/* <h1>List transactions (total: {transactions.length})</h1> */}
           <Link to="/transactions/new">
             <IconButton>
               <Add />
@@ -83,8 +78,8 @@ export const ListTransactions = () => {
           </Link>
         </Box>
         <DataTable
-          rows={transactions.map((t:TTransaction) => ({
-            id: t._id,
+          rows={transactions.map((t: TTransaction) => ({
+            id: t.id,
             bookName: findBookById({ id: t.bookId }),
             memberName: findMemberById({ id: t.memberId }),
             dateOfReturn: dayjs(t.dateOfReturn).format('DD-MM-YYYY'),
@@ -124,7 +119,6 @@ export const ListTransactions = () => {
               )
             }
           ]}
-          onRowClick={handleRowClick}
         />
       </Box>
     </div>

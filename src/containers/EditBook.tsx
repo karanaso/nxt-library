@@ -5,7 +5,7 @@ import { DatePicker } from "../components/DatePicker";
 import dayjs from "dayjs";
 import { Close } from "@mui/icons-material";
 
-let url = 'http://localhost:3000/library/books';
+let url = 'http://localhost:1337/api/books';
 let navigatePage = '/books';
 
 export const EditBook = () => {
@@ -27,10 +27,10 @@ export const EditBook = () => {
   const load = ({ id }: { id: string }) => fetch(`${url}/${id}`)
     .then(r => r.ok && r.json())
     .then(d => {
-      setTitle(d[0].title);
-      setAuthors(d[0].authors);
-      setDateOfPublish(d[0].dateOfPublish);
-      setPages(d[0].pages);
+      setTitle(d.data.attributes.title);
+      setAuthors(d.data.attributes.authors);
+      setDateOfPublish(d.data.attributes.dateOfPublish);
+      setPages(d.data.attributes.pages);
     })
 
   const save = () => {
@@ -44,11 +44,16 @@ export const EditBook = () => {
 
     fetch(myUrl, {
       method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
-        title,
-        authors,
-        dateOfPublish,
-        pages
+        data: {
+          title,
+          authors,
+          dateOfPublish,
+          pages
+        }
       })
     }).then(() => {
       setSnackBarOpen(true);

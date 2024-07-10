@@ -4,7 +4,7 @@ import { TBook, TBooks } from "../types/books";
 import { Add, Delete, Edit, PlusOne } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { DataTable } from "../components/DataTable";
-import { fetchBooks } from "../helpers/http";
+import { books as booksHttp } from "../helpers/http";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingState } from "../components/LoadingBackdrop";
 
@@ -13,7 +13,7 @@ export const ListBooks = () => {
 
   const {isPending, isError, data, error} = useQuery({
     queryKey: ['books'],
-    queryFn: fetchBooks
+    queryFn: booksHttp.fetch
   });
 
   useEffect(() => {
@@ -25,15 +25,6 @@ export const ListBooks = () => {
   if (isError) {
     return <span>Error: {error.message}</span>
   }
-
-  const handleRowClick = (params:any) => {
-    const clickedRowId = params.id;
-    const clickedRowData = params.row;
-  
-    // Perform your desired action here based on the clicked row data
-    console.log("Row clicked:", clickedRowId, clickedRowData);
-    // You can navigate to another page, open a modal, etc.
-  };
 
   return (
     <div>
@@ -62,12 +53,12 @@ export const ListBooks = () => {
           </Link>
         </Box>
         <DataTable
-          rows={books.map(m => ({
-            id: m._id,
-            title: m.title,
-            authors: m.authors,
-            dateOfPublish: m.dateOfPublish,
-            pages: m.pages,
+          rows={books.map(b => ({
+            id: b.id,
+            title: b.title,
+            authors: b.authors,
+            dateOfPublish: b.dateOfPublish,
+            pages: b.pages,
           }))}
           columns={[
             { field: 'title', headerName: 'Title', width: 130 },
@@ -102,7 +93,6 @@ export const ListBooks = () => {
               )
             }
           ]}
-          onRowClick={handleRowClick}
         />
       </Box>
     </div>

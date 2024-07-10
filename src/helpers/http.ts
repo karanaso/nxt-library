@@ -1,3 +1,4 @@
+import { Save } from "@mui/icons-material";
 import { url } from "inspector";
 
 export const conf = {
@@ -25,6 +26,25 @@ export const apiFactory = (url:string) => ({
       };
     })
   ,
+  save: ({ id, data }: { id: string | undefined, data: any }) => {
+    let myUrl = url;
+    let method = 'POST';
+
+    if ((id) && (id !== 'new')) {
+      myUrl += `/${id}`;
+      method = 'PUT';
+    }
+
+    return fetch(myUrl, {
+      method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data
+      })
+    })
+  },
 })
 
 export const members = apiFactory(conf.membersUrl);

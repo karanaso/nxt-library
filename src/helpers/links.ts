@@ -1,3 +1,4 @@
+import { homedir } from "os";
 import { transactions } from "./http";
 
 export const links = {
@@ -5,6 +6,9 @@ export const links = {
     signin: '/user/signin',
     forgotPassword: '/user/forgot-password',
     signup: '/user/signup'
+  },
+  home: {
+    index: '/',
   },
   members: {
     list: '/members',

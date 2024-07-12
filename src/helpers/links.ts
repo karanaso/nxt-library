@@ -5,7 +5,8 @@ export const links = {
   user: {
     signin: '/user/signin',
     forgotPassword: '/user/forgot-password',
-    signup: '/user/signup'
+    signup: '/user/signup',
+    signout: '/user/logout'
   },
   home: {
     index: '/',

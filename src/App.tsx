@@ -10,6 +10,7 @@ import { SignIn } from './containers/users/SignIn';
 import { SignUp } from './containers/users/SignUp';
 import { PasswordReset } from './containers/users/PasswordReset';
 import { links } from './helpers/links';
+import { Signout } from './containers/users/Signout';
 
 const NoMatch = () => <div>No match</div>
 const Home = () => <div>Home</div>
@@ -30,6 +31,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path={links.user.signin} element={<SignIn />} />
         <Route path={links.user.signup} element={<SignUp />} />
+        <Route path={links.user.signout} element={<Signout />} />
         <Route path={links.user.forgotPassword}  element={<PasswordReset />} />
         <Route path={links.members.list} element={<ListMembers />} />
         <Route path={links.members.edit(':id')} element={<EditMember />} />

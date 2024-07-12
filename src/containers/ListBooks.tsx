@@ -7,6 +7,7 @@ import { DataTable } from "../components/DataTable";
 import { books as booksHttp } from "../helpers/http";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingState } from "../components/LoadingBackdrop";
+import { links } from "../helpers/links";
 
 export const ListBooks = () => {
   const [books, setBooks] = useState<TBooks>([]);
@@ -46,7 +47,7 @@ export const ListBooks = () => {
           }}
         >
           <h1>List books (total: {books.length})</h1>
-          <Link to="/books/new">
+          <Link to={links.books.new}>
             <IconButton>
               <Add />
             </IconButton>
@@ -81,7 +82,7 @@ export const ListBooks = () => {
                     gap: 1,
                   }}
                 >
-                  <Link to={`/books/${params.row.id}`}>
+                  <Link to={links.books.edit(params.row.id)}>
                     <IconButton>
                       <Edit />
                     </IconButton>

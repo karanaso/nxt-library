@@ -31,12 +31,12 @@ function App() {
         <Route path={links.user.signin} element={<SignIn />} />
         <Route path={links.user.signup} element={<SignUp />} />
         <Route path={links.user.forgotPassword}  element={<PasswordReset />} />
-        <Route path="members" element={<ListMembers />} />
-        <Route path="members/:id" element={<EditMember />} />
-        <Route path="books/" element={<ListBooks />} />
-        <Route path="books/:id" element={<EditBook />} />
-        <Route path="transactions/" element={<ListTransactions />} />
-        <Route path="transactions/:id" element={<EditTransaction />} />
+        <Route path={links.members.list} element={<ListMembers />} />
+        <Route path={links.members.edit(':id')} element={<EditMember />} />
+        <Route path={links.books.list} element={<ListBooks />} />
+        <Route path={links.books.edit(':id')} element={<EditBook />} />
+        <Route path={links.transactions.list} element={<ListTransactions />} />
+        <Route path={links.transactions.edit(':id')} element={<EditTransaction />} />
         <Route path="*" element={<NoMatch />} />
       </Route>
     </Routes>

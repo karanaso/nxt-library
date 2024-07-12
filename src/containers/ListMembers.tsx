@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { DataTable } from "../components/DataTable";
 import { members as membersHttp } from '../helpers/http';
 import { LoadingState } from '../components/LoadingBackdrop';
+import { links } from '../helpers/links';
 
 export const ListMembers = () => {
   const [members, setMembers] = useState<TMembers>([]);
@@ -45,7 +46,7 @@ export const ListMembers = () => {
           }}
         >
           <h1>List members (total: {members.length})</h1>
-          <Link to="/members/new">
+          <Link to={links.members.new}>
             <IconButton>
               <Add />
             </IconButton>
@@ -80,7 +81,7 @@ export const ListMembers = () => {
                     gap: 1,
                   }}
                 >
-                  <Link to={`/members/${params.row.id}`}>
+                  <Link to={links.members.edit(params.row.id)}>
                     <IconButton>
                       <Edit />
                     </IconButton>

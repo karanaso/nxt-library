@@ -15,6 +15,7 @@ import {
   books as booksHttp,
   transactions as transactionHttp,
 } from "../helpers/http";
+import { links } from "../helpers/links";
 
 export const ListTransactions = () => {
   const [transactions, setTransactions] = useState<TTransactions>([]);
@@ -72,8 +73,8 @@ export const ListTransactions = () => {
             alignItems: "center",
           }}
         >
-          {/* <h1>List transactions (total: {transactions.length})</h1> */}
-          <Link to="/transactions/new">
+          <h1>List transactions (total: {transactions.length})</h1>
+          <Link to={links.transactions.new}>
             <IconButton>
               <Add />
             </IconButton>
@@ -109,7 +110,7 @@ export const ListTransactions = () => {
                     gap: 1,
                   }}
                 >
-                  <Link to={`/transactions/${params.row.id}`}>
+                  <Link to={links.transactions.edit(params.row.id)}>
                     <IconButton>
                       <Edit />
                     </IconButton>

@@ -1,15 +1,20 @@
-import { Save } from "@mui/icons-material";
-import { url } from "inspector";
-
 export const conf = {
-  booksUrl: 'http://localhost:1337/api/books',
-  membersUrl: 'http://localhost:1337/api/members',
-  transactionsUrl: 'http://localhost:1337/api/transactions',
+  booksUrl: 'http://server004.sekdev.com:1337/api/books',
+  membersUrl: 'http://server004.sekdev.com:1337/api/members',
+  transactionsUrl: 'http://server004.sekdev.com:1337/api/transactions',
 }
+
+const options = {
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': 'Bearer '+localStorage.getItem('jwt')
+  }
+};
 
 export const apiFactory = (url:string) => ({
   fetch: () =>
-    fetch(url)
+    fetch(url, options)
       .then(response => response.json())
       .then(data => {
         return data.data.map((d: any) => ({
@@ -17,7 +22,7 @@ export const apiFactory = (url:string) => ({
           ...d.attributes
         }));
       }),
-  getById: (id: string) => fetch(`${url}/${id}`)
+  getById: (id: string) => fetch(`${url}/${id}`, options)
     .then(response => response.json())
     .then(data => {
       return {
@@ -37,9 +42,7 @@ export const apiFactory = (url:string) => ({
 
     return fetch(myUrl, {
       method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: options.headers,
       body: JSON.stringify({
         data
       })

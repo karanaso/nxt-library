@@ -26,5 +26,11 @@ export const links = {
     new: '/transactions/new',
     edit: (id: string) => `/transactions/${id}`
   },
-
 }
+
+export const unsecureLinks = [
+  links.user.signin,
+  links.user.signup,
+  links.user.forgotPassword,
+  links.user.signout,
+]

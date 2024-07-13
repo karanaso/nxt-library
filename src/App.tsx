@@ -1,4 +1,4 @@
-import { Outlet, Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ListMembers } from './containers/ListMembers';
 import { EditMember } from './containers/EditMember';
 import ResponsiveAppBar from './containers/NavBar';
@@ -11,11 +11,20 @@ import { SignUp } from './containers/users/SignUp';
 import { PasswordReset } from './containers/users/PasswordReset';
 import { links } from './helpers/links';
 import { Signout } from './containers/users/Signout';
+import { useLayoutEffect } from 'react';
+import { redirectIfUnsecure } from './helpers/auth';
 
 const NoMatch = () => <div>No match</div>
 const Home = () => <div>Home</div>
 
 function Layout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useLayoutEffect(() => {
+    redirectIfUnsecure({ location, navigate });
+  });
+
   return (
     <div>
       <ResponsiveAppBar />
@@ -23,6 +32,7 @@ function Layout() {
     </div>
   );
 }
+
 
 function App() {
   return (

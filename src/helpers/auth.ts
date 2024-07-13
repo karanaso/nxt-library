@@ -1,3 +1,5 @@
+import { links, unsecureLinks } from "./links";
+
 export const login = async (
   { username, password }: { username: string, password: string }
 ) => {
@@ -19,4 +21,14 @@ export const login = async (
       return data
     }
   });
+}
+
+export const isAllowedUnsecureLink = (link: string) => {
+  return unsecureLinks.includes(link);
+}
+
+export const redirectIfUnsecure = ({ location: { pathname }, navigate }: { location: any, navigate: any }) => {
+  if ((!localStorage.jwt) && (!isAllowedUnsecureLink(pathname))) {      
+    navigate(links.user.signin);
+  }
 }

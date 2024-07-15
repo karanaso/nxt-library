@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DatePicker } from "../components/DatePicker"
-import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { TMembers } from "../types/members";
 import { TBooks } from "../types/books";
 import { useNavigate, useParams } from "react-router-dom";
@@ -25,6 +25,7 @@ export const EditTransaction = () => {
   const [dateOfReturn, setDateOfReturn] = useState(new Date().toISOString());
   const [memberId, setMemberId] = useState('');;
   const [bookId, setBookId] = useState('');
+  const [isReturned, setIsReturned] = useState(false);
 
   const cancel = () => navigate(-1);
 
@@ -40,10 +41,12 @@ export const EditTransaction = () => {
 
   const load = ({ id }: { id: string }) => transactionsHttp.getById(id)
     .then(d => {
+      console.log('----', d)
       setBookId(d.bookId);
       setMemberId(d.memberId);
       setDateOfTransaction(d.dateOfTransaction);
       setDateOfReturn(d.dateOfReturn);
+      setIsReturned(d.isReturned);
     })
 
   const save = () => transactionsHttp.save({
@@ -51,7 +54,8 @@ export const EditTransaction = () => {
       bookId,
       memberId,
       dateOfTransaction,
-      dateOfReturn
+      dateOfReturn,
+      isReturned,
     }
   }).then(() => {
     alert('Successfully updated');
@@ -131,6 +135,14 @@ export const EditTransaction = () => {
         date={dayjs(dateOfReturn) || dayjs()}
         setDate={date => setDateOfReturn(date)}
       />
+
+      <div>
+        <Checkbox
+          onChange={e => setIsReturned(e.target.checked)}
+          checked={isReturned}
+        />
+        <span>Is Returned</span>
+      </div>
 
       <Box
         sx={{

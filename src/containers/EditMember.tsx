@@ -13,7 +13,7 @@ export const EditMember = () => {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    if (params.id) load({ id: params.id })
+    if ((params.id) && (params.id !== 'new')) load({ id: params.id })
   }, [params.id])
 
   const load = ({ id }: { id: string }) => membersHttp.getById(id)

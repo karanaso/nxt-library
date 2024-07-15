@@ -1,9 +1,10 @@
+import { conf } from "./http";
 import { links, unsecureLinks } from "./links";
 
 export const login = async (
   { username, password }: { username: string, password: string }
 ) => {
-  return await fetch('http://localhost:1337/api/auth/local', {
+  return await fetch(conf.auth.signin, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -1,7 +1,7 @@
-import { Box, IconButton } from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { TTransactions, TTransaction } from "../types/transactions";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, CheckBox, Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { TMember } from "../types/members";
@@ -19,11 +19,17 @@ import { links } from "../helpers/links";
 
 export const ListTransactions = () => {
   const [transactions, setTransactions] = useState<TTransactions>([]);
+  const [pendingItemsOnly, setPendingItemsOnly] = useState(false);
 
   const _transactions = useQuery({
     queryKey: ['transactions'],
-    queryFn: transactionHttp.fetch
-  });
+    queryFn: () => {
+      if (pendingItemsOnly) {
+        return transactionHttp.query('?filters[isReturned][$eq]=true')
+      }
+      return transactionHttp.fetch()
+    }
+  }, );
 
   const books = useQuery({
     queryKey: ['books'],
@@ -36,19 +42,23 @@ export const ListTransactions = () => {
   });
 
   useEffect(() => {
-    if (_transactions.data)setTransactions(_transactions.data);
+    if (_transactions.data) setTransactions(_transactions.data);
   }, [_transactions.data]);
+
+  useEffect(() => {
+    _transactions.refetch();
+  }, [pendingItemsOnly]);
 
 
   const findMemberById = ({ id }: { id: string }) => {
     if (!members.data) return 'Loading...';
-    const member: TMember = members.data.find((m: TMember) => m.id.toString() === id);    
+    const member: TMember = members.data.find((m: TMember) => m.id.toString() === id);
     return member.firstName + ' ' + member.lastName;
   };
 
   const findBookById = ({ id }: { id: string }) => {
     if (!books.data) return 'Loading...';
-    const book:TBook = books.data.find((book:TBook) => book.id.toString() === id);
+    const book: TBook = books.data.find((book: TBook) => book.id.toString() === id);
     return book.title;
   };
 
@@ -74,11 +84,19 @@ export const ListTransactions = () => {
           }}
         >
           <h1>List transactions (total: {transactions.length})</h1>
-          <Link to={links.transactions.new}>
-            <IconButton>
-              <Add />
-            </IconButton>
-          </Link>
+          <Box>
+            <Button
+              onClick={() => setPendingItemsOnly(!pendingItemsOnly)}
+            >
+              Σε εκρεμμότητα
+              {pendingItemsOnly && <CheckBox />}
+            </Button>
+            <Link to={links.transactions.new}>
+              <IconButton>
+                <Add />
+              </IconButton>
+            </Link>
+          </Box>
         </Box>
         <DataTable
           rows={transactions.map((t: TTransaction) => ({
@@ -87,12 +105,14 @@ export const ListTransactions = () => {
             memberName: findMemberById({ id: t.memberId }),
             dateOfReturn: dayjs(t.dateOfReturn).format('DD-MM-YYYY'),
             dateOfTransaction: dayjs(t.dateOfTransaction).format('DD-MM-YYYY'),
+            isReturned: t.isReturned ? 'Yes' : 'No',
           }))}
           columns={[
             { field: 'bookName', headerName: 'Book', width: 130 },
             { field: 'memberName', headerName: 'Member', width: 130 },
             { field: 'dateOfReturn', headerName: 'Date of return', width: 130 },
             { field: 'dateOfTransaction', headerName: 'Date of Transaction', width: 130 },
+            { field: 'isReturned', headerName: 'Returned', width: 130 },
             {
               field: 'options',
               headerName: '',

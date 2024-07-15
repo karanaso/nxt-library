@@ -1,12 +1,10 @@
-import { homedir } from "os";
-import { transactions } from "./http";
-
 export const links = {
   user: {
     signin: '/user/signin',
     forgotPassword: '/user/forgot-password',
     signup: '/user/signup',
-    signout: '/user/logout'
+    signout: '/user/logout',
+    configuration: '/user/configuration',
   },
   home: {
     index: '/',

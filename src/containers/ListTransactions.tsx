@@ -37,7 +37,7 @@ export const ListTransactions = () => {
         )
       }
       if (pendingItemsOnly) {
-        return transactionHttp.query('?filters[isReturned][$eq]=true')
+        return transactionHttp.query('?filters[isReturned][$eq]=false')
       }
       return transactionHttp.fetch()
     }
@@ -142,7 +142,7 @@ export const ListTransactions = () => {
             {
               field: 'memberName',
               headerName: 'Member',
-              width: 130,
+              width: 230,
               renderCell: (params) => (
                 <Link to={links.transactions.byBemberId(
                   'member',
@@ -165,6 +165,7 @@ export const ListTransactions = () => {
               headerAlign: 'right',
               flex: 1,
               align: 'right',
+              minWidth: 130,
               renderCell: (params) => (
                 <Box
                   sx={{

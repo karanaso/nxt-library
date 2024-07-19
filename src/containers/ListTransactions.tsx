@@ -126,30 +126,44 @@ export const ListTransactions = () => {
             isReturned: t.isReturned ? 'Yes' : 'No',
           }))}
           columns={[
-            { 
-              field: 'bookName',
-              headerName: 'Book',
-              width: 130,
-              renderCell: (params) => (
-                <Link to={links.transactions.byBemberId(
-                  'book',
-                  params.row.bookId
-                )}>
-                  {params.row.bookName}
-                </Link>
-              )
-            },
             {
               field: 'memberName',
               headerName: 'Member',
               width: 230,
               renderCell: (params) => (
-                <Link to={links.transactions.byBemberId(
-                  'member',
-                  params.row.memberId
-                )}>
-                  {params.row.memberName}
-                </Link>
+                <span>
+                  <Link to={'/members/' + params.row.bookId}>
+                    <IconButton>
+                      <Edit />
+                    </IconButton>
+                  </Link>
+                  <Link to={links.transactions.byBemberId(
+                    'member',
+                    params.row.memberId
+                  )}>
+                    {params.row.memberName}
+                  </Link>                  
+                </span>
+              )
+            },
+            {
+              field: 'bookName',
+              headerName: 'Book',
+              width: 130,
+              renderCell: (params) => (
+                <span>
+                  <Link to={'/books/' + params.row.bookId}>
+                    <IconButton>
+                      <Edit />
+                    </IconButton>
+                  </Link>
+                  <Link to={links.transactions.byBemberId(
+                    'book',
+                    params.row.bookId
+                  )}>
+                    {params.row.bookName}
+                  </Link>                  
+                </span>
               )
             },
             {

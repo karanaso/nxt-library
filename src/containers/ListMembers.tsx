@@ -11,8 +11,8 @@ import { links } from '../helpers/links';
 
 export const ListMembers = () => {
   const [members, setMembers] = useState<TMembers>([]);
-  
-  const {isPending, isError, data, error} = useQuery({
+
+  const { isPending, isError, data, error } = useQuery({
     queryKey: ['members'],
     queryFn: membersHttp.fetch
   });
@@ -61,8 +61,19 @@ export const ListMembers = () => {
             email: m.email,
           }))}
           columns={[
-            { field: 'firstName', headerName: 'First name', width: 130 },
-            { field: 'lastName', headerName: 'Last name', width: 130 },
+            {
+              field: 'firstName',
+              headerName: 'First name',
+              width: 230,
+              renderCell: (params) => (
+                <Link to={links.transactions.byBemberId(
+                  'member',
+                  params.row.id
+                )}>
+                  {params.row.firstName} {params.row.lastName}
+                </Link>
+              )
+            },
             { field: 'phoneNumber', headerName: 'Phone number', width: 130 },
             { field: 'email', headerName: 'E-mail', width: 230 },
             {

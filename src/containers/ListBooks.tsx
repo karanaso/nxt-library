@@ -62,7 +62,19 @@ export const ListBooks = () => {
             pages: b.pages,
           }))}
           columns={[
-            { field: 'title', headerName: 'Title', width: 130 },
+            { 
+              field: 'title',
+              headerName: 'Title',
+              width: 130,
+              renderCell: (params) => (
+                <Link to={links.transactions.byBemberId(
+                  'book',
+                  params.row.id
+                )}>
+                  {params.row.title}
+                </Link>
+              )
+            },
             { field: 'authors', headerName: 'Authors', width: 130 },
             { field: 'dateOfPublish', headerName: 'Date of publish', width: 130 },
             { field: 'pages', headerName: 'No. Pages', align: 'center', headerAlign: 'center', width: 130 },

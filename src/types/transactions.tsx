@@ -4,6 +4,7 @@ export type TTransaction = {
     memberId: string;
     dateOfTransaction: string;
     dateOfReturn: string;
+    isReturned: boolean;
   }
   
   export type TTransactions = TTransaction[];

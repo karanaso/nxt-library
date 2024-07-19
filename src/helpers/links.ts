@@ -1,12 +1,14 @@
-import { homedir } from "os";
-import { transactions } from "./http";
-
+export type TMemberOrBook = {
+  member: 'member',
+  book: 'book',
+}
 export const links = {
   user: {
     signin: '/user/signin',
     forgotPassword: '/user/forgot-password',
     signup: '/user/signup',
-    signout: '/user/logout'
+    signout: '/user/logout',
+    configuration: '/user/configuration',
   },
   home: {
     index: '/',
@@ -24,7 +26,8 @@ export const links = {
   transactions: {
     list: '/transactions',
     new: '/transactions/new',
-    edit: (id: string) => `/transactions/${id}`
+    edit: (id: string) => `/transactions/${id}`,
+    byBemberId: (memberOrBook: TMemberOrBook | string, id: string) => `/transactions/${memberOrBook}/${id}`,
   },
 }
 

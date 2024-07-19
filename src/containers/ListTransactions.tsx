@@ -2,7 +2,7 @@ import { Box, Button, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { TTransactions, TTransaction } from "../types/transactions";
 import { Add, CheckBox, Delete, Edit } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { TMember } from "../types/members";
 import { TBook } from "../types/books";
@@ -18,18 +18,30 @@ import {
 import { links } from "../helpers/links";
 
 export const ListTransactions = () => {
+  const params = useParams();
+  console.log(params);
   const [transactions, setTransactions] = useState<TTransactions>([]);
   const [pendingItemsOnly, setPendingItemsOnly] = useState(false);
 
   const _transactions = useQuery({
     queryKey: ['transactions'],
     queryFn: () => {
+      if (params.memberOrBook === 'member') {
+        return transactionHttp.query(
+          `?filters[memberId][$eq]=${params.id}`
+        )
+      }
+      if (params.memberOrBook === 'book') {
+        return transactionHttp.query(
+          `?filters[bookId][$eq]=${params.id}`
+        )
+      }
       if (pendingItemsOnly) {
         return transactionHttp.query('?filters[isReturned][$eq]=true')
       }
       return transactionHttp.fetch()
     }
-  }, );
+  },);
 
   const books = useQuery({
     queryKey: ['books'],
@@ -48,6 +60,10 @@ export const ListTransactions = () => {
   useEffect(() => {
     _transactions.refetch();
   }, [pendingItemsOnly]);
+
+  useEffect(() => {
+    _transactions.refetch();
+  }, [params])
 
 
   const findMemberById = ({ id }: { id: string }) => {
@@ -101,6 +117,8 @@ export const ListTransactions = () => {
         <DataTable
           rows={transactions.map((t: TTransaction) => ({
             id: t.id,
+            bookId: t.bookId,
+            memberId: t.memberId,
             bookName: findBookById({ id: t.bookId }),
             memberName: findMemberById({ id: t.memberId }),
             dateOfReturn: dayjs(t.dateOfReturn).format('DD-MM-YYYY'),
@@ -108,9 +126,37 @@ export const ListTransactions = () => {
             isReturned: t.isReturned ? 'Yes' : 'No',
           }))}
           columns={[
-            { field: 'bookName', headerName: 'Book', width: 130 },
-            { field: 'memberName', headerName: 'Member', width: 130 },
-            { field: 'dateOfReturn', headerName: 'Date of return', width: 130 },
+            { 
+              field: 'bookName',
+              headerName: 'Book',
+              width: 130,
+              renderCell: (params) => (
+                <Link to={links.transactions.byBemberId(
+                  'book',
+                  params.row.bookId
+                )}>
+                  {params.row.bookName}
+                </Link>
+              )
+            },
+            {
+              field: 'memberName',
+              headerName: 'Member',
+              width: 130,
+              renderCell: (params) => (
+                <Link to={links.transactions.byBemberId(
+                  'member',
+                  params.row.memberId
+                )}>
+                  {params.row.memberName}
+                </Link>
+              )
+            },
+            {
+              field: 'dateOfReturn',
+              headerName: 'Date of return',
+              width: 130
+            },
             { field: 'dateOfTransaction', headerName: 'Date of Transaction', width: 130 },
             { field: 'isReturned', headerName: 'Returned', width: 130 },
             {

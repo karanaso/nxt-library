@@ -51,6 +51,7 @@ function App() {
         <Route path={links.books.edit(':id')} element={<EditBook />} />
         <Route path={links.transactions.list} element={<ListTransactions />} />
         <Route path={links.transactions.edit(':id')} element={<EditTransaction />} />
+        <Route path={links.transactions.byBemberId(':memberOrBook',':id')} element={<ListTransactions />} />
         <Route path="*" element={<NoMatch />} />
       </Route>
     </Routes>

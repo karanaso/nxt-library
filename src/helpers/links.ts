@@ -1,3 +1,7 @@
+export type TMemberOrBook = {
+  member: 'member',
+  book: 'book',
+}
 export const links = {
   user: {
     signin: '/user/signin',
@@ -22,7 +26,8 @@ export const links = {
   transactions: {
     list: '/transactions',
     new: '/transactions/new',
-    edit: (id: string) => `/transactions/${id}`
+    edit: (id: string) => `/transactions/${id}`,
+    byBemberId: (memberOrBook: TMemberOrBook | string, id: string) => `/transactions/${memberOrBook}/${id}`,
   },
 }
 

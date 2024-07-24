@@ -13,6 +13,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { links } from '../../helpers/links';
+import { supabase } from '../../helpers/supabase';
+import { useRecoilState } from 'recoil';
+import { SnackBarState } from '../../components/SnackbarComponent';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props: any) {
   return (
@@ -31,13 +35,34 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export const SignUp = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const [email, setEmail] = React.useState(Math.random().toString()+'@localhost.com');
+  const [password, setPassword] = React.useState(Math.random().toString()); 
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [message, setMessage] = useRecoilState(SnackBarState);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();    
+    
+    let { data, error } = await supabase.auth.signUp({
+      email,
+      password
+    })
+
+    if (error) {
+      console.log('b', error)
+    }
+
+    if (data) {
+      setMessage({
+        type: 'success',
+        text: 'Signup successful. Please check your email for a confirmation link.'
+      })
+      navigate(links.user.signin);
+    }
+  
+    return;
   };
 
   return (
@@ -69,6 +94,8 @@ export const SignUp = () => {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  value={firstName}
+                  onChange={e => setFirstName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -79,6 +106,8 @@ export const SignUp = () => {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                  value={lastName}
+                  onChange={e => setLastName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -89,6 +118,8 @@ export const SignUp = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -100,6 +131,8 @@ export const SignUp = () => {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>

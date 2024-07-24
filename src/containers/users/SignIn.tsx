@@ -13,6 +13,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { links } from '../../helpers/links';
 import { login } from '../../helpers/auth';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { SnackBarState } from '../../components/SnackbarComponent';
 
 function Copyright(props: any) {
   return (
@@ -34,7 +36,7 @@ export const SignIn = () => {
   const navigate = useNavigate();
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  
+  const [message, setMessage] = useRecoilState(SnackBarState);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     
@@ -44,7 +46,12 @@ export const SignIn = () => {
         password: password
       });
       
-      if (response.jwt) alert('logged in')
+      if (response) {
+        setMessage({
+          type: 'success',
+          text: 'Welcome back!'
+        })
+      }
       navigate(links.home.index);
     } catch (e) {
       localStorage.clear();
@@ -81,6 +88,7 @@ export const SignIn = () => {
               name="username"
               autoComplete="email"
               autoFocus
+              value={username}
               onChange={e => setUsername(e.target.value)}
             />
             <TextField
@@ -92,6 +100,7 @@ export const SignIn = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
               onChange={e => setPassword(e.target.value)}
             />
             <Button

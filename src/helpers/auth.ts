@@ -1,27 +1,32 @@
 import { conf } from "./http";
 import { links, unsecureLinks } from "./links";
+import { supabase } from "./supabase";
 
+
+export const updateUserInfo = ({
+  data
+}: { data: any }) => {
+  if (data && data.session) {
+    localStorage.setItem('jwt', data.session.access_token);
+    localStorage.setItem('session', JSON.stringify(data.session));
+    localStorage.setItem('user', JSON.stringify(data.user));
+  }
+}
 export const login = async (
   { username, password }: { username: string, password: string }
 ) => {
-  return await fetch(conf.auth.signin, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      identifier: username,
-      password,
-    })
-  }).then(r => {
-    return r.json();
-  }).then(data => {
-    if (data.jwt) {
-      localStorage.setItem('jwt', data.jwt);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      return data
-    }
-  });
+
+  let { data, error } = await supabase.auth.signInWithPassword({
+    email: username,
+    password,
+  })
+
+  if (error) {
+    console.log('b', error)
+  }
+
+  updateUserInfo({ data });
+  return data
 }
 
 export const isAllowedUnsecureLink = (link: string) => {
@@ -29,7 +34,7 @@ export const isAllowedUnsecureLink = (link: string) => {
 }
 
 export const redirectIfUnsecure = ({ location: { pathname }, navigate }: { location: any, navigate: any }) => {
-  if ((!localStorage.jwt) && (!isAllowedUnsecureLink(pathname))) {      
+  if ((!localStorage.jwt) && (!isAllowedUnsecureLink(pathname))) {
     navigate(links.user.signin);
   }
 }

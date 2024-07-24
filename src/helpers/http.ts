@@ -39,15 +39,15 @@ export const apiFactory = (url: string) => ({
     let method = 'POST';
 
     if ((id) && (id !== 'new')) {
-      myUrl += `/${id}`;
-      method = 'PUT';
+      myUrl += `?id=eq.${id}`;
+      method = 'PATCH';
     }
 
     return fetch(myUrl, {
       method,
       headers: options.headers,
       body: JSON.stringify({
-        data
+        ...data
       })
     })
   },

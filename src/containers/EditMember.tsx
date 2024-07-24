@@ -2,6 +2,7 @@ import { Box, Button, TextField } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { members as membersHttp } from "../helpers/http";
+import { links } from "../helpers/links";
 
 export const EditMember = () => {
   const params = useParams();
@@ -18,6 +19,10 @@ export const EditMember = () => {
 
   const load = ({ id }: { id: string }) => membersHttp.getById(id)
     .then(d => {
+      if (d.error) {
+        alert(d.error.message);
+        navigate(links.members.list)
+      }
       setFirstName(d.firstName);
       setLastName(d.lastName);
       setPhoneNumber(d.phoneNumber);

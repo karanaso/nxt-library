@@ -11,6 +11,7 @@ import {
   transactions as transactionsHttp,
 } from "../helpers/http";
 import dayjs from "dayjs";
+import { links } from "../helpers/links";
 
 let navigatePage = '/transactions';
 
@@ -41,7 +42,10 @@ export const EditTransaction = () => {
 
   const load = ({ id }: { id: string }) => transactionsHttp.getById(id)
     .then(d => {
-      console.log('----', d)
+      if (d.error) {
+        alert(d.error.message);
+        navigate(links.transactions.list)
+      }
       setBookId(d.bookId);
       setMemberId(d.memberId);
       setDateOfTransaction(d.dateOfTransaction);

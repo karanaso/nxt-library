@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { DatePicker } from "../components/DatePicker";
 import { books as booksHttp } from "../helpers/http";
 import dayjs from "dayjs";
+import { links } from "../helpers/links";
 
 let navigatePage = '/books';
 
@@ -22,6 +23,10 @@ export const EditBook = () => {
 
   const load = ({ id }: { id: string }) => booksHttp.getById(id)
     .then(d => {
+      if (d.error) {
+        alert(d.error.message);
+        navigate(links.books.list)
+      }
       setTitle(d.title);
       setAuthors(d.authors);
       setDateOfPublish(d.dateOfPublish);

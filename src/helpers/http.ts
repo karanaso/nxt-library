@@ -1,18 +1,19 @@
 export const conf = {
   auth: {
-    signin: 'http://localhost:1337/api/auth/local',
+    signin: 'http://localhost:54321/api/auth/local',
   },
-  booksUrl: 'http://localhost:1337/api/books',
-  configurations: 'http://localhost:1337/api/configurations',
-  membersUrl: 'http://localhost:1337/api/members',
-  transactionsUrl: 'http://localhost:1337/api/transactions',
+  booksUrl: 'http://localhost:54321/rest/v1/books',
+  configurations: 'http://localhost:54321/rest/v1/configurations',
+  membersUrl: 'http://localhost:54321/rest/v1/members',
+  transactionsUrl: 'http://localhost:54321/rest/v1/transactions',
 }
 
 const options = {
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+    'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
+    // 'apikey': localStorage.getItem('jwt'),
   }
 };
 
@@ -20,10 +21,7 @@ export const apiFactory = (url: string) => ({
   fetch: () => fetch(url, options)
     .then(response => response.json())
     .then(data => {
-      return data.data.map((d: any) => ({
-        id: d.id,
-        ...d.attributes
-      }));
+      return data;
     }),
   query: (params:string) => fetch(url+params, options)
     .then(response => response.json())
@@ -33,17 +31,9 @@ export const apiFactory = (url: string) => ({
         ...d.attributes
       }));
     }),
-  getById: (id: string) => fetch(`${url}/${id}`, options)
+  getById: (id: string) => fetch(`${url}?id=eq.${id}&select=*`, options)
     .then(response => response.json())
-    .then(data => {
-      if (data.error) return data;
-              
-      return {
-        id: data.id,
-        ...data.attributes
-      };
-    })
-  ,
+    .then(data => data[0]),
   save: ({ id, data }: { id: string | undefined, data: any }) => {
     let myUrl = url;
     let method = 'POST';

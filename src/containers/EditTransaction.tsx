@@ -46,6 +46,7 @@ export const EditTransaction = () => {
         alert(d.error.message);
         navigate(links.transactions.list)
       }
+      console.log('the data', d);
       setBookId(d.bookId);
       setMemberId(d.memberId);
       setDateOfTransaction(d.dateOfTransaction);

@@ -68,14 +68,22 @@ export const ListTransactions = () => {
 
   const findMemberById = ({ id }: { id: string }) => {
     if (!members.data) return 'Loading...';
-    const member: TMember = members.data.find((m: TMember) => m.id.toString() === id);
-    return member.firstName + ' ' + member.lastName;
+    const member: TMember = members.data.find((m: TMember) => m.id === id);
+    if (member) {
+      return member.firstName + ' ' + member.lastName;
+    } else {
+      return 'Not found';
+    }
   };
 
   const findBookById = ({ id }: { id: string }) => {
     if (!books.data) return 'Loading...';
-    const book: TBook = books.data.find((book: TBook) => book.id.toString() === id);
-    return book.title;
+    const book: TBook = books.data.find((book: TBook) => book.id === id);
+    if (book) {
+      return book.title;
+    } else {
+      return 'Not found'
+    }
   };
 
   if (_transactions.isPending) return <LoadingState />;

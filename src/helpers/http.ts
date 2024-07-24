@@ -36,9 +36,11 @@ export const apiFactory = (url: string) => ({
   getById: (id: string) => fetch(`${url}/${id}`, options)
     .then(response => response.json())
     .then(data => {
+      if (data.error) return data;
+              
       return {
-        id: data.data.id,
-        ...data.data.attributes
+        id: data.id,
+        ...data.attributes
       };
     })
   ,

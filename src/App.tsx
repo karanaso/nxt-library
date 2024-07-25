@@ -14,8 +14,8 @@ import { Signout } from './containers/users/Signout';
 import { useLayoutEffect } from 'react';
 import { redirectIfUnsecure } from './helpers/auth';
 import { Configuration } from './containers/users/ConfigurationOptions';
-import { SnackbarComponent } from './components/SnackbarComponent';
-import { RecoilRoot } from 'recoil';
+
+import { SnackbarProvider } from './components/SnackbarComponent';
 
 const NoMatch = () => <div>No match</div>
 const Home = () => <div>Home</div>
@@ -23,24 +23,21 @@ const Home = () => <div>Home</div>
 function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
-
   useLayoutEffect(() => {
     redirectIfUnsecure({ location, navigate });
   });
 
   return (
-    <div>
+    <SnackbarProvider>
       <ResponsiveAppBar />
-      <SnackbarComponent />
       <Outlet />
-    </div>
+    </SnackbarProvider>
   );
 }
 
 
 function App() {
   return (
-    <RecoilRoot>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -59,7 +56,6 @@ function App() {
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>
-    </RecoilRoot>
   );
 }
 

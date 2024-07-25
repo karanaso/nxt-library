@@ -13,8 +13,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { links } from '../../helpers/links';
 import { login } from '../../helpers/auth';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { SnackBarState } from '../../components/SnackbarComponent';
+import { useSnackbar } from '../../components/SnackbarComponent';
+
 
 function Copyright(props: any) {
   return (
@@ -36,7 +36,7 @@ export const SignIn = () => {
   const navigate = useNavigate();
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [message, setMessage] = useRecoilState(SnackBarState);
+  const { showSnackbar } = useSnackbar();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     
@@ -47,10 +47,10 @@ export const SignIn = () => {
       });
       
       if (response) {
-        setMessage({
-          type: 'success',
-          text: 'Welcome back!'
-        })
+        showSnackbar(
+          'Welcome back!',
+          'success',
+        )
       }
       navigate(links.home.index);
     } catch (e) {

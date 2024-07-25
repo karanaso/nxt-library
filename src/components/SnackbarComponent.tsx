@@ -1,27 +1,33 @@
-import { Snackbar } from "@mui/material"
-import { atom, useRecoilState } from "recoil";
+import { Alert, AlertColor, Snackbar } from "@mui/material"
+import { createContext, ReactNode, useContext, useState } from "react";
 
-export const SnackBarState = atom({
-  key: 'SnackBarState', // unique ID (with respect to other atoms/selectors)
-  default: {
-    text: '',
-    type: 'success'
-  }, // default value (aka initial value)
-});
+export const SnackbarContext = createContext<any|null|undefined>(1);
 
-export const SnackbarComponent = () => {
-  const [message, setMessage] = useRecoilState(SnackBarState);
+const SnackbarProvider = ({ children }: { children: ReactNode }) => {
+  const [open, setOpen] = useState(true);
+  const [message, setMessage] = useState('aaaaa');
+  const [severity, setSeverity] = useState('success');
+
+  const handleClose = () => setOpen(false);
+
+  const showSnackbar = (message: string, severity: AlertColor = 'success') => {
+    setMessage(message);
+    setSeverity(severity);
+    setOpen(true);
+  };
 
   return (
-    message.text ? <Snackbar
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      open={true}
-      autoHideDuration={6000}
-      onClose={() => setMessage({ ...message, text: '' })}
-      message={message.text}
-      style={{
-        backgroundColor: message.type === 'success' ? 'green' : 'red'
-      }}
-    /> : <></>
-  )
-}
+    <SnackbarContext.Provider value={{ showSnackbar }}>
+      <Snackbar open={open} autoHideDuration={60000} onClose={handleClose}>
+        <Alert onClose={handleClose} >
+          {message}
+        </Alert>
+      </Snackbar>
+      {children}
+    </SnackbarContext.Provider >
+  );
+};
+
+const useSnackbar = () => useContext(SnackbarContext);
+
+export { SnackbarProvider, useSnackbar };

@@ -14,9 +14,8 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { links } from '../../helpers/links';
 import { supabase } from '../../helpers/supabase';
-import { useRecoilState } from 'recoil';
-import { SnackBarState } from '../../components/SnackbarComponent';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from '../../components/SnackbarComponent';
 
 function Copyright(props: any) {
   return (
@@ -39,7 +38,7 @@ export const SignUp = () => {
   const [password, setPassword] = React.useState(Math.random().toString()); 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
-  const [message, setMessage] = useRecoilState(SnackBarState);
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -55,10 +54,10 @@ export const SignUp = () => {
     }
 
     if (data) {
-      setMessage({
-        type: 'success',
-        text: 'Signup successful. Please check your email for a confirmation link.'
-      })
+      showSnackbar(
+        'Signup successful. Please check your email for a confirmation link.',
+        'success',
+      )
       navigate(links.user.signin);
     }
   

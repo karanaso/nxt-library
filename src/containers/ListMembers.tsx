@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Box, IconButton } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import { TMembers } from "../types/members";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
@@ -8,24 +8,21 @@ import { DataTable } from "../components/DataTable";
 import { members as membersHttp } from '../helpers/http';
 import { LoadingState } from '../components/LoadingBackdrop';
 import { links } from '../helpers/links';
+import { SnackbarContext, useSnackbar } from '../components/SnackbarComponent';
+
 
 export const ListMembers = () => {
   const [members, setMembers] = useState<TMembers>([]);
-
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ['members'],
-    queryFn: membersHttp.fetch
-  });
-
+  const { showSnackbar, setIsLoading } = useSnackbar();
+  
   useEffect(() => {
-    if (data) setMembers(data);
-  }, [data]);
-
-  if (isPending) return <LoadingState />
-
-  if (isError) {
-    return <span>Error: {error.message}</span>
-  }
+    showSnackbar('loading');
+    setIsLoading(true);
+    membersHttp.fetch()
+      .then(d => console.log(d))
+      .then(() => setIsLoading(false))
+    showSnackbar('data succesfully loaded');
+  }, []);
 
   return (
     <div>

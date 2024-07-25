@@ -1,13 +1,14 @@
 import { Alert, AlertColor, Snackbar } from "@mui/material"
 import { createContext, ReactNode, useContext, useState } from "react";
+import { LoadingState } from "./LoadingBackdrop";
 
 export const SnackbarContext = createContext<any|null|undefined>(1);
 
-const SnackbarProvider = ({ children }: { children: ReactNode }) => {
+const MultiProvider = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(true);
   const [message, setMessage] = useState('aaaaa');
   const [severity, setSeverity] = useState('success');
-
+  const [isLoading, setIsLoading] = useState(false); 
   const handleClose = () => setOpen(false);
 
   const showSnackbar = (message: string, severity: AlertColor = 'success') => {
@@ -17,7 +18,8 @@ const SnackbarProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <SnackbarContext.Provider value={{ showSnackbar }}>
+    <SnackbarContext.Provider value={{ showSnackbar, setIsLoading }}>
+      {isLoading && <LoadingState />}
       <Snackbar open={open} autoHideDuration={60000} onClose={handleClose}>
         <Alert onClose={handleClose} >
           {message}
@@ -30,4 +32,4 @@ const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 
 const useSnackbar = () => useContext(SnackbarContext);
 
-export { SnackbarProvider, useSnackbar };
+export { MultiProvider, useSnackbar };

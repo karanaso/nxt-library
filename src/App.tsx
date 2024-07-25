@@ -15,7 +15,7 @@ import { useLayoutEffect } from 'react';
 import { redirectIfUnsecure } from './helpers/auth';
 import { Configuration } from './containers/users/ConfigurationOptions';
 
-import { SnackbarProvider } from './components/SnackbarComponent';
+import { MultiProvider } from './components/SnackbarComponent';
 
 const NoMatch = () => <div>No match</div>
 const Home = () => <div>Home</div>
@@ -28,10 +28,10 @@ function Layout() {
   });
 
   return (
-    <SnackbarProvider>
+    <MultiProvider>
       <ResponsiveAppBar />
       <Outlet />
-    </SnackbarProvider>
+    </MultiProvider>
   );
 }
 

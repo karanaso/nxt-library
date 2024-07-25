@@ -7,7 +7,7 @@ export const links = {
     signin: '/user/signin',
     forgotPassword: '/user/forgot-password',
     signup: '/user/signup',
-    signout: '/user/logout',
+    signout: '/user/signout',
     configuration: '/user/configuration',
   },
   home: {

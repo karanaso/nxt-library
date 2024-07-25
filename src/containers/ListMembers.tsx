@@ -1,27 +1,25 @@
-import { useQuery } from '@tanstack/react-query'
 import { Box, IconButton } from "@mui/material";
-import { useContext, useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { TMembers } from "../types/members";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { DataTable } from "../components/DataTable";
 import { members as membersHttp } from '../helpers/http';
-import { LoadingState } from '../components/LoadingBackdrop';
 import { links } from '../helpers/links';
-import { SnackbarContext, useSnackbar } from '../components/SnackbarComponent';
+import { useSnackbar } from '../components/SnackbarComponent';
 
 
 export const ListMembers = () => {
   const [members, setMembers] = useState<TMembers>([]);
   const { showSnackbar, setIsLoading } = useSnackbar();
-  
+
   useEffect(() => {
     showSnackbar('loading');
     setIsLoading(true);
     membersHttp.fetch()
-      .then(d => console.log(d))
+      .then(d => setMembers(d))
       .then(() => setIsLoading(false))
-    showSnackbar('data succesfully loaded');
+      .then(() => showSnackbar('data succesfully loaded'))
   }, []);
 
   return (

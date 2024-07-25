@@ -1,31 +1,25 @@
 import { Box, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { TBook, TBooks } from "../types/books";
-import { Add, Delete, Edit, PlusOne } from "@mui/icons-material";
+import { TBooks } from "../types/books";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { DataTable } from "../components/DataTable";
 import { books as booksHttp } from "../helpers/http";
-import { useQuery } from "@tanstack/react-query";
-import { LoadingState } from "../components/LoadingBackdrop";
 import { links } from "../helpers/links";
+import { useSnackbar } from "../components/SnackbarComponent";
 
 export const ListBooks = () => {
   const [books, setBooks] = useState<TBooks>([]);
-
-  const {isPending, isError, data, error} = useQuery({
-    queryKey: ['books'],
-    queryFn: booksHttp.fetch
-  });
+  const { showSnackbar, setIsLoading } = useSnackbar();
 
   useEffect(() => {
-    if (data) setBooks(data);
-  }, [data]);
-
-  if (isPending) return <LoadingState />
-
-  if (isError) {
-    return <span>Error: {error.message}</span>
-  }
+    showSnackbar('loading');
+    setIsLoading(true);
+    booksHttp.fetch()
+      .then(d => setBooks(d))
+      .then(() => setIsLoading(false))
+      .then(() => showSnackbar('data succesfully loaded'))
+  }, []);
 
   return (
     <div>

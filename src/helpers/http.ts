@@ -4,12 +4,13 @@ import { links } from "./links";
 
 export const conf = {
   auth: {
-    signin: 'http://localhost:54321/api/auth/local',
+    signin: 'http://localhost:3000/books/user/signin',
+    signup: 'http://localhost:3000/books/user/signup',
   },
-  booksUrl: 'http://localhost:54321/rest/v1/books',
-  configurations: 'http://localhost:54321/rest/v1/configurations',
-  membersUrl: 'http://localhost:54321/rest/v1/members',
-  transactionsUrl: 'http://localhost:54321/rest/v1/transactions',
+  booksUrl: 'http://localhost:3000/books/books',
+  configurations: 'http://localhost:3000/books/configurations',
+  membersUrl: 'http://localhost:3000/books/members',
+  transactionsUrl: 'http://localhost:3000/books/transactions',
 }
 
 const options = () => ({

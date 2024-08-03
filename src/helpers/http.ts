@@ -1,5 +1,3 @@
-// https://postgrest.org/en/v11/references/errors.html
-
 import { links } from "./links";
 
 export const conf = {
@@ -22,11 +20,11 @@ const options = () => ({
 });
 
 
-const jwtHandler = (data:any) => {
+const jwtHandler = (data: any) => {
   console.log(data);
   if (data) {
     if (data.code) {
-      if (data.code.includes('PGRST3')) return document.location.href=links.user.signout;
+      if (data.code.includes('PGRST3')) return document.location.href = links.user.signout;
     }
   }
   return data;
@@ -37,19 +35,21 @@ export const apiFactory = (url: string) => ({
     .then(response => response.json())
     .then(data => jwtHandler(data))
     .then(data => {
-      // if (data.message.includes('JWT')) return document.location.href=links.user.signout;
-      return data;
+      return data.map((d: any) => ({
+        id: d._id,
+        ...d
+      }))
     }),
-  query: (params:string) => fetch(url+params, options())
+  query: (params: string) => fetch(url + params, options())
     .then(response => response.json())
     .then(data => jwtHandler(data))
     .then(data => {
       return data.data.map((d: any) => ({
-        id: d.id,
-        ...d.attributes
+        id: d._id,
+        ...d
       }));
     }),
-  getById: (id: string) => fetch(`${url}?id=eq.${id}&select=*`, options())
+  getById: (id: string) => fetch(`${url}/${id}`, options())
     .then(response => response.json())
     .then(data => jwtHandler(data))
     .then(data => data[0]),
@@ -69,7 +69,7 @@ export const apiFactory = (url: string) => ({
         ...data
       })
     })
-    .then(data => jwtHandler(data))
+      .then(data => jwtHandler(data))
   },
 })
 

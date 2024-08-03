@@ -6,7 +6,7 @@ import { supabase } from "./supabase";
 export const updateUserInfo = ({
   data
 }: { data: any }) => {
-  if (data && data.session) {
+  if (data && data.jwt) {
     localStorage.setItem('jwt', data.jwt);
     localStorage.setItem('userId', JSON.stringify(data.userId));
   }

@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { links } from '../../helpers/links';
+import { conf } from '../../helpers/http';
 
 function Copyright(props: any) {
   return (
@@ -34,10 +35,9 @@ export const SignUp = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    fetch(
+      conf.auth.signup+'?email='+data.get('email')+'&password='+data.get('password'),
+    )
   };
 
   return (

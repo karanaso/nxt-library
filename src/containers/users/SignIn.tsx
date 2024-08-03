@@ -45,14 +45,14 @@ export const SignIn = () => {
         username,
         password: password
       });
-      
+
+      navigate(links.home.index);
       if (response) {
         showSnackbar(
           'Welcome back!',
           'success',
         )
       }
-      navigate(links.home.index);
     } catch (e) {
       localStorage.clear();
       alert('Oops, there was a problem signing you in ')

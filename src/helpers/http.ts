@@ -1,11 +1,12 @@
 export const conf = {
   auth: {
-    signin: 'http://localhost:1337/api/auth/local',
+    signin: 'http://localhost:3000/books/user/signin',
+    signup: 'http://localhost:3000/books/user/signup',
   },
-  booksUrl: 'http://localhost:1337/api/books',
-  configurations: 'http://localhost:1337/api/configurations',
-  membersUrl: 'http://localhost:1337/api/members',
-  transactionsUrl: 'http://localhost:1337/api/transactions',
+  booksUrl: 'http://localhost:3000/books/books',
+  configurations: 'http://localhost:3000/books/configurations',
+  membersUrl: 'http://localhost:3000/books/members',
+  transactionsUrl: 'http://localhost:3000/books/transactions',
 }
 
 const options = {

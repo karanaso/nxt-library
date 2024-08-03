@@ -4,16 +4,7 @@ import { links, unsecureLinks } from "./links";
 export const login = async (
   { username, password }: { username: string, password: string }
 ) => {
-  return await fetch(conf.auth.signin, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      identifier: username,
-      password,
-    })
-  }).then(r => {
+  return await fetch(conf.auth.signin+`?email=${username}&password=${password}`).then(r => {
     return r.json();
   }).then(data => {
     if (data.jwt) {

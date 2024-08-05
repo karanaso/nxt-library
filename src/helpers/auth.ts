@@ -16,7 +16,6 @@ export const login = async (
 ) => fetch(conf.auth.signin + `?email=${username}&password=${password}`)
   .then(response => response.json())
   .then(data => {
-    console.log(data);
     updateUserInfo({ data });
     return data;
   })

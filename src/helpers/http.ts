@@ -21,7 +21,6 @@ const options = () => ({
 
 
 const jwtHandler = (data: any) => {
-  console.log(data);
   if (data) {
     if (data.code) {
       if (data.code.includes('PGRST3')) return document.location.href = links.user.signout;

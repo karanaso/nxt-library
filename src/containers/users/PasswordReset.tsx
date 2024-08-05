@@ -34,10 +34,6 @@ export const PasswordReset = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
   };
 
   return (
@@ -109,10 +105,8 @@ export const Login2 = () => {
         password: 'karanaso123'
       })
     }).then(r => {
-      console.log(r);
       return r.json();
     }).then(data => {
-      console.log(data);
       localStorage.setItem('jwt', data.jwt);
       localStorage.setItem('user', JSON.stringify(data.user));
     })
@@ -122,11 +116,9 @@ export const Login2 = () => {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer' + localStorage.getItem('jwt')
       }
-    }).then(r => {
-      console.log(r);
-      return r.json();
-    }).then(data => {
-      console.log(data);
+    })
+    .then(r => r.json())
+    .then(data => {
       localStorage.setItem('jwt', data.jwt);
       localStorage.setItem('user', JSON.stringify(data.user));
     })

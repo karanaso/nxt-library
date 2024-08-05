@@ -35,7 +35,6 @@ export const ListTransactions = () => {
       booksHttp.fetch(),
       transactionHttp.fetch(),
     ]).then(([members, books, transactions]) => {
-      console.log(members, books, transactions);
       setMembers(members);
       setBooks(books);
       setTransactions(transactions);

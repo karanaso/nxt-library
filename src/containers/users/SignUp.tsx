@@ -50,7 +50,7 @@ export const SignUp = () => {
     })
 
     if (error) {
-      console.log('b', error)
+      console.error('b', error)
     }
 
     if (data) {

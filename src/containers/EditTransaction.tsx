@@ -38,7 +38,6 @@ export const EditTransaction = () => {
       let _transaction = await transactionsHttp.getById(id);
       let _members = await membersHttp.fetch();
       let _books = await booksHttp.fetch();
-      console.log('-->', members, _transaction, _books)
 
       setMembers(_members);
       setBooks(_books);

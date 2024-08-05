@@ -12,7 +12,6 @@ export const Configuration = () => {
   const fetchConfiguration = async () => {
     try {
       const data = await configurations.fetch();
-      console.log(data);
       if (data.length > 0) {
         setMailGunAPIKey(data[0].mailGunAPIKey);
         setConfigurationId(data[0].id);
@@ -35,7 +34,6 @@ export const Configuration = () => {
           mailGunAPIKey
         }
       })
-      console.log(data);
     } catch (e) {
       console.error(e);
     }

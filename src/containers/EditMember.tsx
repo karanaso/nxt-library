@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { members as membersHttp } from "../helpers/http";
 import { links } from "../helpers/links";
+import { useSnackbar } from "../components/SnackbarComponent";
 
 export const EditMember = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -20,7 +22,7 @@ export const EditMember = () => {
   const load = ({ id }: { id: string }) => membersHttp.getById(id)
     .then(d => {
       if (d.error) {
-        alert(d.error.message);
+        showSnackbar(d.error.message);
         navigate(links.members.list)
       }
       setFirstName(d.firstName);
@@ -37,7 +39,7 @@ export const EditMember = () => {
       email
     }
   }).then(() => {
-    alert('Successfully updated');
+    showSnackbar('Member successfully updated');
     navigate('/members')
   });
 

@@ -11,15 +11,13 @@ import { useSnackbar } from '../components/SnackbarComponent';
 
 export const ListMembers = () => {
   const [members, setMembers] = useState<TMembers>([]);
-  const { showSnackbar, setIsLoading } = useSnackbar();
+  const { setIsLoading } = useSnackbar();
 
   useEffect(() => {
-    showSnackbar('loading');
     setIsLoading(true);
     membersHttp.fetch()
       .then(d => setMembers(d))
       .then(() => setIsLoading(false))
-      .then(() => showSnackbar('data succesfully loaded'))
   }, []);
 
   return (

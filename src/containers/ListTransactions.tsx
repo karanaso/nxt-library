@@ -19,7 +19,7 @@ import 'dayjs/locale/el';
 
 export const ListTransactions = () => {
   const params = useParams();
-  const { showSnackbar, setIsLoading } = useSnackbar();
+  const { setIsLoading } = useSnackbar();
 
   const [transactions, setTransactions] = useState<TTransactions>([]);
   const [pendingItemsOnly, setPendingItemsOnly] = useState(false);

@@ -5,12 +5,14 @@ import { DatePicker } from "../components/DatePicker";
 import { books as booksHttp } from "../helpers/http";
 import dayjs from "dayjs";
 import { links } from "../helpers/links";
+import { useSnackbar } from "../components/SnackbarComponent";
 
 let navigatePage = '/books';
 
 export const EditBook = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
 
   const [title, setTitle] = useState('');
   const [authors, setAuthors] = useState('');
@@ -24,7 +26,8 @@ export const EditBook = () => {
   const load = ({ id }: { id: string }) => booksHttp.getById(id)
     .then(d => {
       if (d.error) {
-        alert(d.error.message);
+        showSnackbar(d.error.message);
+
         navigate(links.books.list)
       }
       setTitle(d.title);
@@ -41,7 +44,7 @@ export const EditBook = () => {
       pages
     }
   }).then(() => {
-    alert('Successfully updated');
+    showSnackbar('Book successfully updated');
     navigate(navigatePage)
   });
 

@@ -10,15 +10,13 @@ import { useSnackbar } from '../components/SnackbarComponent';
 
 export const ListBooks = () => {
   const [books, setBooks] = useState<TBooks>([]);
-  const { showSnackbar, setIsLoading } = useSnackbar();
+  const { setIsLoading } = useSnackbar();
 
   useEffect(() => {
-    showSnackbar('loading');
     setIsLoading(true);
     booksHttp.fetch()
       .then(d => setBooks(d))
       .then(() => setIsLoading(false))
-      .then(() => showSnackbar('data succesfully loaded'))
   }, []);
 
   return (

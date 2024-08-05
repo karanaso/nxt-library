@@ -64,7 +64,7 @@ export const EditTransaction = () => {
       isReturned,
     }
   }).then(() => {
-    showSnackbar('Successfully updated');
+    showSnackbar('Transaction successfully updated');
     navigate(navigatePage)
   });
 

@@ -3,72 +3,50 @@ import { useEffect, useState } from "react";
 import { TTransactions, TTransaction } from "../types/transactions";
 import { Add, CheckBox, Delete, Edit } from "@mui/icons-material";
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { TMember } from "../types/members";
-import { TBook } from "../types/books";
-import dayjs from "dayjs";
-import 'dayjs/locale/el';
+import { TMember, TMembers } from "../types/members";
+import { TBook, TBooks } from "../types/books";
 import { DataTable } from "../components/DataTable";
-import { LoadingState } from "../components/LoadingBackdrop";
 import {
-  members as memberHttp,
+  members as membersHttp,
   books as booksHttp,
   transactions as transactionHttp,
 } from "../helpers/http";
 import { links } from "../helpers/links";
+import { useSnackbar } from "../components/SnackbarComponent";
+
+import dayjs from "dayjs";
+import 'dayjs/locale/el';
 
 export const ListTransactions = () => {
   const params = useParams();
-  console.log(params);
+  const { showSnackbar, setIsLoading } = useSnackbar();
+
   const [transactions, setTransactions] = useState<TTransactions>([]);
   const [pendingItemsOnly, setPendingItemsOnly] = useState(false);
+  const [members, setMembers] = useState<TMembers>([]);
+  const [books, setBooks] = useState<TBooks>([]);
 
-  const _transactions = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => {
-      if (params.memberOrBook === 'member') {
-        return transactionHttp.query(
-          `?filters[memberId][$eq]=${params.id}`
-        )
-      }
-      if (params.memberOrBook === 'book') {
-        return transactionHttp.query(
-          `?filters[bookId][$eq]=${params.id}`
-        )
-      }
-      if (pendingItemsOnly) {
-        return transactionHttp.query('?filters[isReturned][$eq]=false')
-      }
-      return transactionHttp.fetch()
-    }
-  },);
-
-  const books = useQuery({
-    queryKey: ['books'],
-    queryFn: booksHttp.fetch
-  });
-
-  const members = useQuery({
-    queryKey: ['members'],
-    queryFn: memberHttp.fetch
-  });
 
   useEffect(() => {
-    if (_transactions.data) setTransactions(_transactions.data);
-  }, [_transactions.data]);
+    setIsLoading(true);
 
-  useEffect(() => {
-    _transactions.refetch();
-  }, [pendingItemsOnly]);
+    Promise.all([
+      membersHttp.fetch(),
+      booksHttp.fetch(),
+      transactionHttp.fetch(),
+    ]).then(([members, books, transactions]) => {
+      console.log(members, books, transactions);
+      setMembers(members);
+      setBooks(books);
+      setTransactions(transactions);
+      setIsLoading(false);
+    })
+  }, []);
 
-  useEffect(() => {
-    _transactions.refetch();
-  }, [params])
-
-
+  
   const findMemberById = ({ id }: { id: string }) => {
-    if (!members.data) return 'Loading...';
-    const member: TMember = members.data.find((m: TMember) => m.id === id);
+    if (!members) return 'Loading...';
+    const member: TMember | undefined = members.find((m: TMember) => m.id === id);
     if (member) {
       return member.firstName + ' ' + member.lastName;
     } else {
@@ -77,16 +55,14 @@ export const ListTransactions = () => {
   };
 
   const findBookById = ({ id }: { id: string }) => {
-    if (!books.data) return 'Loading...';
-    const book: TBook = books.data.find((book: TBook) => book.id === id);
+    if (!books) return 'Loading...';
+    const book: TBook | undefined = books.find((book: TBook) => book.id === id);
     if (book) {
       return book.title;
     } else {
       return 'Not found'
     }
   };
-
-  if (_transactions.isPending) return <LoadingState />;
 
   return (
     <div>

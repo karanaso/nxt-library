@@ -7,8 +7,10 @@ import { DataTable } from "../components/DataTable";
 import { books as booksHttp } from "../helpers/http";
 import { links } from "../helpers/links";
 import { useSnackbar } from '../components/SnackbarComponent';
+import { useIntl } from "react-intl";
 
 export const ListBooks = () => {
+  const intl = useIntl();
   const [books, setBooks] = useState<TBooks>([]);
   const { setIsLoading } = useSnackbar();
 
@@ -38,7 +40,19 @@ export const ListBooks = () => {
             alignItems: "center",
           }}
         >
-          <h1>List books (total: {books.length})</h1>
+          <h1>
+            {intl.formatMessage({ id: 'listBooks' })}
+            <span style={{
+              fontSize: '10pt',
+              marginLeft: '1rem'
+            }}>
+              (
+                {intl.formatMessage({ id: 'total' })}
+                &nbsp;
+                {books.length}
+              )
+            </span>
+          </h1>
           <Link to={links.books.new}>
             <IconButton>
               <Add />
@@ -56,7 +70,7 @@ export const ListBooks = () => {
           columns={[
             { 
               field: 'title',
-              headerName: 'Title',
+              headerName: intl.formatMessage({ id: 'Title' }),
               width: 130,
               renderCell: (params) => (
                 <Link to={links.transactions.byBemberId(
@@ -67,9 +81,9 @@ export const ListBooks = () => {
                 </Link>
               )
             },
-            { field: 'authors', headerName: 'Authors', width: 130 },
-            { field: 'dateOfPublish', headerName: 'Date of publish', width: 130 },
-            { field: 'pages', headerName: 'No. Pages', align: 'center', headerAlign: 'center', width: 130 },
+            { field: 'authors', headerName: intl.formatMessage({ id: 'Authors' }), width: 130 },
+            { field: 'dateOfPublish', headerName: intl.formatMessage({ id:  'DateOfPublish' }), width: 130 },
+            { field: 'pages', headerName: intl.formatMessage({ id: 'NoPages' }), align: 'center', headerAlign: 'center', width: 130 },
             {
               field: 'options',
               headerName: '',

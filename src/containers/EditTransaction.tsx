@@ -13,10 +13,12 @@ import {
 import dayjs from "dayjs";
 import { links } from "../helpers/links";
 import { useSnackbar } from "../components/SnackbarComponent";
+import { useIntl } from "react-intl";
 
 let navigatePage = '/transactions';
 
 export const EditTransaction = () => {
+  const intl = useIntl();
   const params = useParams();
   const navigate = useNavigate();
   const { showSnackbar, setIsLoading } = useSnackbar();
@@ -64,7 +66,7 @@ export const EditTransaction = () => {
       isReturned,
     }
   }).then(() => {
-    showSnackbar('Transaction successfully updated');
+    showSnackbar(intl.formatMessage({id: 'TransactionSuccessfullyUpdated'}));
     navigate(navigatePage)
   });
 
@@ -83,16 +85,19 @@ export const EditTransaction = () => {
         margin: 'auto',
       }}
     >
-      <h1>Edit/Add Transaction</h1>
+      <h1>{intl.formatMessage({id: 'editAddTransaction'})}</h1>
 
       <DatePicker
-        label="Transaction Date"
+        label={intl.formatMessage({id: 'TransactionDate'})}
         date={dayjs(dateOfTransaction) || dayjs()}
         setDate={date => setDateOfTransaction(date)}
       />
 
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Select a member</InputLabel>
+        <InputLabel id="demo-simple-select-label">
+        {intl.formatMessage({id: 'SelectAMember'})}
+        
+        </InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -112,7 +117,9 @@ export const EditTransaction = () => {
       </FormControl>
 
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Select a book</InputLabel>
+        <InputLabel id="demo-simple-select-label">
+        {intl.formatMessage({id: 'SelectABook'})}
+        </InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -130,7 +137,7 @@ export const EditTransaction = () => {
       </FormControl>
 
       <DatePicker
-        label="Return date"
+        label={intl.formatMessage({id: 'DateOfReturn'})}
         date={dayjs(dateOfReturn) || dayjs()}
         setDate={date => setDateOfReturn(date)}
       />
@@ -140,7 +147,9 @@ export const EditTransaction = () => {
           onChange={e => setIsReturned(e.target.checked)}
           checked={isReturned}
         />
-        <span>Is Returned</span>
+        <span>
+          {intl.formatMessage({id: 'isReturned'})}
+        </span>
       </div>
 
       <Box

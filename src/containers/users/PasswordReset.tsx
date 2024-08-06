@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -13,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { links } from '../../helpers/links';
+import { useIntl } from 'react-intl';
 
 function Copyright(props: any) {
   return (
@@ -31,6 +30,7 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export const PasswordReset = () => {
+  const intl = useIntl();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -52,7 +52,7 @@ export const PasswordReset = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Forgot your password ?
+            {intl.formatMessage({ id: 'ForgotPassword' })}
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -60,13 +60,13 @@ export const PasswordReset = () => {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label={intl.formatMessage({ id: 'email' })}
               name="email"
               autoComplete="email"
               autoFocus
               />
               <div>
-                Please enter your password and you will receive an email with a link to reset your password.
+              {intl.formatMessage({ id: 'Please enter your password and you will receive an email with a link to reset your password.' })}
               </div>
             <Button
               type="submit"
@@ -74,14 +74,14 @@ export const PasswordReset = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Reset your password
+              {intl.formatMessage({ id: 'Reset your password' })}              
             </Button>
             <Grid container>
               <Grid item xs>
               </Grid>
               <Grid item>
                 <Link href={links.user.signin} variant="body2">
-                  Already have an account? Sign In
+                  {intl.formatMessage({ id: 'Already have an account? Sign In' })}                      
                 </Link>
               </Grid>
             </Grid>

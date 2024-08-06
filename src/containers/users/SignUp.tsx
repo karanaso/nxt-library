@@ -16,6 +16,7 @@ import { links } from '../../helpers/links';
 import { supabase } from '../../helpers/supabase';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../../components/SnackbarComponent';
+import { useIntl } from 'react-intl';
 
 function Copyright(props: any) {
   return (
@@ -34,8 +35,9 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export const SignUp = () => {
-  const [email, setEmail] = React.useState(Math.random().toString()+'@localhost.com');
-  const [password, setPassword] = React.useState(Math.random().toString()); 
+  const intl = useIntl();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState(''); 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const { showSnackbar } = useSnackbar();
@@ -55,7 +57,7 @@ export const SignUp = () => {
 
     if (data) {
       showSnackbar(
-        'Signup successful. Please check your email for a confirmation link.',
+        intl.formatMessage({ id: 'SignupSuccessfulPleaseCheckYourEmail' }),
         'success',
       )
       navigate(links.user.signin);
@@ -91,7 +93,7 @@ export const SignUp = () => {
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label={intl.formatMessage({ id: 'firstName' })}
                   autoFocus
                   value={firstName}
                   onChange={e => setFirstName(e.target.value)}
@@ -102,7 +104,7 @@ export const SignUp = () => {
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
+                  label={intl.formatMessage({ id: 'lastName' })}
                   name="lastName"
                   autoComplete="family-name"
                   value={lastName}
@@ -114,7 +116,7 @@ export const SignUp = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label={intl.formatMessage({ id: 'email' })}
                   name="email"
                   autoComplete="email"
                   value={email}
@@ -126,7 +128,7 @@ export const SignUp = () => {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label={intl.formatMessage({ id: 'password' })}
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -137,7 +139,7 @@ export const SignUp = () => {
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+                  label={intl.formatMessage({ id: 'IWantToReceivePromotions' })}
                 />
               </Grid>
             </Grid>
@@ -147,12 +149,12 @@ export const SignUp = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              {intl.formatMessage({ id: 'signUp' })}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href={links.user.signin} variant="body2">
-                  Already have an account? Sign in
+                  {intl.formatMessage({ id: 'AlreadyHaveAnAccountSignIn' })}s
                 </Link>
               </Grid>
             </Grid>

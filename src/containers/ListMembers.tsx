@@ -7,9 +7,11 @@ import { DataTable } from "../components/DataTable";
 import { members as membersHttp } from '../helpers/http';
 import { links } from '../helpers/links';
 import { useSnackbar } from '../components/SnackbarComponent';
+import { useIntl } from "react-intl";
 
 
 export const ListMembers = () => {
+  const intl = useIntl();
   const [members, setMembers] = useState<TMembers>([]);
   const { setIsLoading } = useSnackbar();
 
@@ -38,7 +40,19 @@ export const ListMembers = () => {
             alignItems: "center",
           }}
         >
-          <h1>List members (total: {members.length})</h1>
+          <h1>
+            {intl.formatMessage({ id: 'listMembers' })}
+            <span style={{
+              fontSize: '10pt',
+              marginLeft: '1rem'
+            }}>
+              (
+                {intl.formatMessage({ id: 'total' })}
+                &nbsp;
+                {members.length}
+              )
+            </span>
+          </h1>
           <Link to={links.members.new}>
             <IconButton>
               <Add />
@@ -56,7 +70,7 @@ export const ListMembers = () => {
           columns={[
             {
               field: 'firstName',
-              headerName: 'First name',
+              headerName: intl.formatMessage({id: 'fullName'}),
               width: 230,
               renderCell: (params) => (
                 <Link to={links.transactions.byBemberId(
@@ -67,8 +81,16 @@ export const ListMembers = () => {
                 </Link>
               )
             },
-            { field: 'phoneNumber', headerName: 'Phone number', width: 130 },
-            { field: 'email', headerName: 'E-mail', width: 230 },
+            { 
+              field: 'phoneNumber', 
+              headerName: intl.formatMessage({id: 'phoneNumber'}),
+              width: 130
+            },
+            { 
+              field: 'email', 
+              headerName: intl.formatMessage({id: 'email'}),
+              width: 230
+            },
             {
               field: 'options',
               headerName: '',

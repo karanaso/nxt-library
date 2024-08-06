@@ -6,10 +6,12 @@ import { books as booksHttp } from "../helpers/http";
 import dayjs from "dayjs";
 import { links } from "../helpers/links";
 import { useSnackbar } from "../components/SnackbarComponent";
+import { useIntl } from "react-intl";
 
 let navigatePage = '/books';
 
 export const EditBook = () => {
+  const intl = useIntl();
   const params = useParams();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
@@ -44,7 +46,7 @@ export const EditBook = () => {
       pages
     }
   }).then(() => {
-    showSnackbar('Book successfully updated');
+    showSnackbar(intl.formatMessage({ id: 'BookSuccessfullyUpdated' }));
     navigate(navigatePage)
   });
 
@@ -64,26 +66,26 @@ export const EditBook = () => {
       <TextField
         id="outlined-basic"
         value={title}
-        label="Title"
+        label={intl.formatMessage({ id: "Title" })}
         variant="outlined"
         onChange={(e) => setTitle(e.target.value)}
       />
       <TextField
         id="outlined-basic"
         value={authors}
-        label="Authors"
+        label={intl.formatMessage({ id: "Authors" })}
         variant="outlined"
         onChange={(e) => setAuthors(e.target.value)}
       />
       <DatePicker
         date={dayjs(dateOfPublish) || dayjs()}
         setDate={date => setDateOfPublish(date)}
-        label="Publish Date"
+        label={intl.formatMessage({ id: "DateOfPublish" })}
       />
       <TextField
         id="outlined-basic"
         value={pages}
-        label="pages"
+        label={intl.formatMessage({ id: "NoPages" })}
         variant="outlined"
         onChange={(e) => setPages(parseFloat(e.target.value))}
       />
@@ -96,8 +98,20 @@ export const EditBook = () => {
 
         }}
       >
-        <Button variant="contained" color="warning" onClick={cancel}>Cancel</Button>
-        <Button variant="contained" color="primary" onClick={save}>Save</Button>
+        <Button
+          variant="contained"
+          color="warning"
+          onClick={cancel}
+        >
+          {intl.formatMessage({ id: 'cancel' })}
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={save}
+        >
+          {intl.formatMessage({ id: 'save' })}
+        </Button>
       </Box>
 
     </Box>

@@ -16,8 +16,10 @@ import { useSnackbar } from "../components/SnackbarComponent";
 
 import dayjs from "dayjs";
 import 'dayjs/locale/el';
+import { useIntl } from "react-intl";
 
 export const ListTransactions = () => {
+  const intl = useIntl();
   const params = useParams();
   const { setIsLoading } = useSnackbar();
 
@@ -44,7 +46,7 @@ export const ListTransactions = () => {
 
   
   const findMemberById = ({ id }: { id: string }) => {
-    if (!members) return 'Loading...';
+    if (!members) return intl.formatMessage({ id: 'loading' });
     const member: TMember | undefined = members.find((m: TMember) => m.id === id);
     if (member) {
       return member.firstName + ' ' + member.lastName;
@@ -54,12 +56,12 @@ export const ListTransactions = () => {
   };
 
   const findBookById = ({ id }: { id: string }) => {
-    if (!books) return 'Loading...';
+    if (!books) return intl.formatMessage({ id: 'loading' });
     const book: TBook | undefined = books.find((book: TBook) => book.id === id);
     if (book) {
       return book.title;
     } else {
-      return 'Not found'
+      return intl.formatMessage({ id: 'notFound' })
     }
   };
 
@@ -82,12 +84,24 @@ export const ListTransactions = () => {
             alignItems: "center",
           }}
         >
-          <h1>List transactions (total: {transactions.length})</h1>
+          <h1>
+            {intl.formatMessage({ id: 'listTransactions' })}
+            <span style={{
+              fontSize: '10pt',
+              marginLeft: '1rem'
+            }}>
+              (
+                {intl.formatMessage({ id: 'total' })}
+                &nbsp;
+                {transactions.length}
+              )
+            </span>
+          </h1>
           <Box>
             <Button
               onClick={() => setPendingItemsOnly(!pendingItemsOnly)}
             >
-              Σε εκρεμμότητα
+              {intl.formatMessage({ id: 'pending' })}
               {pendingItemsOnly && <CheckBox />}
             </Button>
             <Link to={links.transactions.new}>
@@ -106,12 +120,14 @@ export const ListTransactions = () => {
             memberName: findMemberById({ id: t.memberId }),
             dateOfReturn: dayjs(t.dateOfReturn).format('DD-MM-YYYY'),
             dateOfTransaction: dayjs(t.dateOfTransaction).format('DD-MM-YYYY'),
-            isReturned: t.isReturned ? 'Yes' : 'No',
+            isReturned: t.isReturned 
+              ? intl.formatMessage({ id: 'Yes' }) 
+              : intl.formatMessage({ id: 'No' }),
           }))}
           columns={[
             {
               field: 'memberName',
-              headerName: 'Member',
+              headerName: intl.formatMessage({id: 'Member'}),
               width: 230,
               renderCell: (params) => (
                 <span>
@@ -131,7 +147,7 @@ export const ListTransactions = () => {
             },
             {
               field: 'bookName',
-              headerName: 'Book',
+              headerName: intl.formatMessage({id: 'Book'}),
               width: 130,
               renderCell: (params) => (
                 <span>
@@ -151,11 +167,19 @@ export const ListTransactions = () => {
             },
             {
               field: 'dateOfReturn',
-              headerName: 'Date of return',
+              headerName: intl.formatMessage({id: 'DateOfReturn'}),
+              width: 180
+            },
+            { 
+              field: 'dateOfTransaction', 
+              headerName: intl.formatMessage({id: 'DateOfTransaction'}),
               width: 130
             },
-            { field: 'dateOfTransaction', headerName: 'Date of Transaction', width: 130 },
-            { field: 'isReturned', headerName: 'Returned', width: 130 },
+            { 
+              field: 'isReturned', 
+              headerName: intl.formatMessage({id: 'isReturned'}),
+              width: 130
+            },
             {
               field: 'options',
               headerName: '',

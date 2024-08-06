@@ -1,7 +1,5 @@
 import { conf } from "./http";
 import { links, unsecureLinks } from "./links";
-import { supabase } from "./supabase";
-
 
 export const updateUserInfo = ({
   data

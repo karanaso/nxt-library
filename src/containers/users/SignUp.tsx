@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { links } from '../../helpers/links';
-import { supabase } from '../../helpers/supabase';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../../components/SnackbarComponent';
 import { useIntl } from 'react-intl';
@@ -37,32 +36,24 @@ const defaultTheme = createTheme();
 export const SignUp = () => {
   const intl = useIntl();
   const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState(''); 
+  const [password, setPassword] = React.useState('');
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();    
-    
-    let { data, error } = await supabase.auth.signUp({
-      email,
-      password
-    })
+    event.preventDefault();
 
-    if (error) {
-      console.error('b', error)
-    }
+    alert('need to ipmlement signup')
 
-    if (data) {
-      showSnackbar(
-        intl.formatMessage({ id: 'SignupSuccessfulPleaseCheckYourEmail' }),
-        'success',
-      )
-      navigate(links.user.signin);
-    }
-  
+    showSnackbar(
+      intl.formatMessage({ id: 'SignupSuccessfulPleaseCheckYourEmail' }),
+      'success',
+    )
+    navigate(links.user.signin);
+
+
     return;
   };
 

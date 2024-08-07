@@ -19,6 +19,22 @@ const options = () => ({
   }
 });
 
+export const isLoggedIn = () => {
+  return localStorage.getItem('jwt') ? true : false;
+}
+const jwtOrLogin = ({ secure = true } = {}) => {  
+  return new Promise((resolve, reject) => {
+    if (secure) {
+      if (!localStorage.getItem('jwt')) {
+        resolve(false);
+        return document.location.href = links.user.signin;
+      }
+      return resolve({});
+    } else {
+      return resolve({});
+    }
+  });
+}
 
 const jwtHandler = (data: any) => {
   if (data) {
@@ -30,28 +46,37 @@ const jwtHandler = (data: any) => {
 }
 
 export const apiFactory = (url: string) => ({
-  fetch: () => fetch(url, options())
-    .then(response => response.json())
-    .then(data => jwtHandler(data))
-    .then(data => {
-      return data.map((d: any) => ({
-        id: d._id,
-        ...d
-      }))
+  fetch: () => jwtOrLogin({ secure: true })
+    .then(() => {
+      return fetch(url, options())
+        .then(response => response.json())
+        .then(data => jwtHandler(data))
+        .then(data => {
+          return data.map((d: any) => ({
+            id: d._id,
+            ...d
+          }))
+        })
     }),
-  query: (params: string) => fetch(url + params, options())
-    .then(response => response.json())
-    .then(data => jwtHandler(data))
-    .then(data => {
-      return data.data.map((d: any) => ({
-        id: d._id,
-        ...d
-      }));
+  query: (params: string) => jwtOrLogin({ secure: true })
+    .then(() => {
+      return fetch(url + params, options())
+        .then(response => response.json())
+        .then(data => jwtHandler(data))
+        .then(data => {
+          return data.data.map((d: any) => ({
+            id: d._id,
+            ...d
+          }));
+        })
     }),
-  getById: (id: string) => fetch(`${url}/${id}`, options())
-    .then(response => response.json())
-    .then(data => jwtHandler(data))
-    .then(data => data[0]),
+  getById: (id: string) => jwtOrLogin({ secure: true })
+    .then(() => {
+      return fetch(`${url}/${id}`, options())
+        .then(response => response.json())
+        .then(data => jwtHandler(data))
+        .then(data => data[0])
+    }),
   save: ({ id, data }: { id: string | undefined, data: any }) => {
     let myUrl = url;
     let method = 'POST';
@@ -61,14 +86,17 @@ export const apiFactory = (url: string) => ({
       method = 'PATCH';
     }
 
-    return fetch(myUrl, {
-      method,
-      headers: options().headers,
-      body: JSON.stringify({
-        ...data
+    return jwtOrLogin({ secure: true })
+      .then(() => {
+        return fetch(myUrl, {
+          method,
+          headers: options().headers,
+          body: JSON.stringify({
+            ...data
+          })
+        })
+          .then(data => jwtHandler(data))
       })
-    })
-      .then(data => jwtHandler(data))
   },
 })
 

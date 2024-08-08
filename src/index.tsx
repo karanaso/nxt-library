@@ -1,4 +1,4 @@
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter as Router } from "react-router-dom";
 import App from './App';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
@@ -10,10 +10,10 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <BrowserRouter>
+  <Router>
     <CssBaseline />
     <App />
-  </BrowserRouter>
+  </Router>
 );
 
 // If you want to start measuring performance in your app, pass a function

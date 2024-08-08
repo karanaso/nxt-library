@@ -23,14 +23,17 @@ export const EditMember = () => {
 
   const load = ({ id }: { id: string }) => membersHttp.getById(id)
     .then(d => {
-      if (d.error) {
-        showSnackbar(d.error.message);
-        navigate(links.members.list)
+      if (d) {
+
+        if (d.error) {
+          showSnackbar(d.error.message);
+          navigate(links.members.list)
+        }
+        setFirstName(d.firstName);
+        setLastName(d.lastName);
+        setPhoneNumber(d.phoneNumber);
+        setEmail(d.email);
       }
-      setFirstName(d.firstName);
-      setLastName(d.lastName);
-      setPhoneNumber(d.phoneNumber);
-      setEmail(d.email);
     })
 
   const save = () => membersHttp.save({
@@ -41,7 +44,7 @@ export const EditMember = () => {
       email
     }
   }).then(() => {
-    showSnackbar(intl.formatMessage({id: 'MemberSuccessfullyUpdated' }));
+    showSnackbar(intl.formatMessage({ id: 'MemberSuccessfullyUpdated' }));
     navigate('/members')
   });
 
@@ -61,28 +64,28 @@ export const EditMember = () => {
       <TextField
         id="outlined-basic"
         value={firstName}
-        label={intl.formatMessage({id: "firstName" })}
+        label={intl.formatMessage({ id: "firstName" })}
         variant="outlined"
         onChange={(e) => setFirstName(e.target.value)}
       />
       <TextField
         id="outlined-basic"
         value={lastName}
-        label={intl.formatMessage({id: "lastName" })}
+        label={intl.formatMessage({ id: "lastName" })}
         variant="outlined"
         onChange={(e) => setLastName(e.target.value)}
       />
       <TextField
         id="outlined-basic"
         value={phoneNumber}
-        label={intl.formatMessage({id: "phoneNumber" })}
+        label={intl.formatMessage({ id: "phoneNumber" })}
         variant="outlined"
         onChange={(e) => setPhoneNumber(e.target.value)}
       />
       <TextField
         id="outlined-basic"
         value={email}
-        label={intl.formatMessage({id: "email" })}
+        label={intl.formatMessage({ id: "email" })}
         variant="outlined"
         onChange={(e) => setEmail(e.target.value)}
       />

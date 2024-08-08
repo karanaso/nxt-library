@@ -131,7 +131,7 @@ export const ListTransactions = () => {
               width: 230,
               renderCell: (params) => (
                 <span>
-                  <Link to={'/members/' + params.row.bookId}>
+                  <Link to={'/members/' + params.row.memberId}>
                     <IconButton>
                       <Edit />
                     </IconButton>

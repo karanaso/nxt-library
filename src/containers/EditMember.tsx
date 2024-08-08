@@ -60,7 +60,7 @@ export const EditMember = () => {
         margin: 'auto',
       }}
     >
-      <h1>Edit Member</h1>
+      <h1>{intl.formatMessage({ id: "editMember" })}</h1>
       <TextField
         id="outlined-basic"
         value={firstName}

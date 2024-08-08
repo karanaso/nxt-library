@@ -2,19 +2,21 @@ import { Alert, AlertColor, Snackbar } from "@mui/material"
 import { createContext, ReactNode, useContext, useState } from "react";
 import { LoadingState } from "./LoadingBackdrop";
 
-export const SnackbarContext = createContext<any|null|undefined>(1);
+export const SnackbarContext = createContext<any | null | undefined>(1);
 
 const MultiProvider = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(true);
-  const [message, setMessage] = useState('aaaaa');
+  const [message, setMessage] = useState<string|null>();
   const [severity, setSeverity] = useState('success');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
   const handleClose = () => setOpen(false);
 
   const showSnackbar = (message: string, severity: AlertColor = 'success') => {
-    setMessage(message);
-    setSeverity(severity);
-    setOpen(true);
+    if (message.length > 0) {
+      setMessage(message);
+      setSeverity(severity);
+      setOpen(true);
+    }
   };
 
   return (

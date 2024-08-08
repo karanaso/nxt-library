@@ -27,7 +27,7 @@ const jwtOrLogin = ({ secure = true } = {}) => {
     if (secure) {
       if (!localStorage.getItem('jwt')) {
         resolve(false);
-        return document.location.href = links.user.signin;
+        return document.location.hash = links.user.signin;
       }
       return resolve({});
     } else {
@@ -39,7 +39,7 @@ const jwtOrLogin = ({ secure = true } = {}) => {
 const jwtHandler = (data: any) => {
   if (data) {
     if (data.code) {
-      if (data.code.includes('PGRST3')) return document.location.href = links.user.signout;
+      if (data.code.includes('PGRST3')) return document.location.hash = links.user.signout;
     }
   }
   return data;
@@ -82,8 +82,8 @@ export const apiFactory = (url: string) => ({
     let method = 'POST';
 
     if ((id) && (id !== 'new')) {
-      myUrl += `?id=eq.${id}`;
-      method = 'PATCH';
+      myUrl += `/${id}`;
+      method = 'PUT';
     }
 
     return jwtOrLogin({ secure: true })

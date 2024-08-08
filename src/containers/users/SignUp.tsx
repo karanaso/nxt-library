@@ -13,7 +13,13 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { links } from '../../helpers/links';
+<<<<<<< HEAD
 import { conf } from '../../helpers/http';
+=======
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from '../../components/SnackbarComponent';
+import { useIntl } from 'react-intl';
+>>>>>>> supabase
 
 function Copyright(props: any) {
   return (
@@ -32,12 +38,21 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export const SignUp = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const intl = useIntl();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const { showSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     fetch(
       conf.auth.signup+'?email='+data.get('email')+'&password='+data.get('password'),
     )
+
   };
 
   return (
@@ -67,8 +82,10 @@ export const SignUp = () => {
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label={intl.formatMessage({ id: 'firstName' })}
                   autoFocus
+                  value={firstName}
+                  onChange={e => setFirstName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -76,9 +93,11 @@ export const SignUp = () => {
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
+                  label={intl.formatMessage({ id: 'lastName' })}
                   name="lastName"
                   autoComplete="family-name"
+                  value={lastName}
+                  onChange={e => setLastName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -86,9 +105,11 @@ export const SignUp = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label={intl.formatMessage({ id: 'email' })}
                   name="email"
                   autoComplete="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -96,16 +117,18 @@ export const SignUp = () => {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label={intl.formatMessage({ id: 'password' })}
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+                  label={intl.formatMessage({ id: 'IWantToReceivePromotions' })}
                 />
               </Grid>
             </Grid>
@@ -115,12 +138,12 @@ export const SignUp = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              {intl.formatMessage({ id: 'signUp' })}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href={links.user.signin} variant="body2">
-                  Already have an account? Sign in
+                  {intl.formatMessage({ id: 'AlreadyHaveAnAccountSignIn' })}s
                 </Link>
               </Grid>
             </Grid>

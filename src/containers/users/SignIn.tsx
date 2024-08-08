@@ -13,6 +13,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { links } from '../../helpers/links';
 import { login } from '../../helpers/auth';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from '../../components/SnackbarComponent';
+import { useIntl } from 'react-intl';
+
 
 function Copyright(props: any) {
   return (
@@ -31,24 +34,30 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export const SignIn = () => {
+  const intl = useIntl();
   const navigate = useNavigate();
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  
+  const { showSnackbar } = useSnackbar();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     try {
       const response = await login({
         username,
         password: password
       });
-      
-      if (response.jwt) alert('logged in')
+
       navigate(links.home.index);
+      if (response) {
+        showSnackbar(
+          intl.formatMessage({ id: 'WelcomeBack' }),
+          'success',
+        )
+      }
     } catch (e) {
       localStorage.clear();
-      alert('Oops, there was a problem signing you in ')
+      alert(intl.formatMessage({ id: 'OopsSignIn' }));
     }
 
   };
@@ -69,7 +78,7 @@ export const SignIn = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            <cite></cite>
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -77,10 +86,11 @@ export const SignIn = () => {
               required
               fullWidth
               id="username"
-              label="Email Address"
+              label={intl.formatMessage({ id: 'email' })}
               name="username"
               autoComplete="email"
               autoFocus
+              value={username}
               onChange={e => setUsername(e.target.value)}
             />
             <TextField
@@ -88,10 +98,11 @@ export const SignIn = () => {
               required
               fullWidth
               name="password"
-              label="Password"
+              label={intl.formatMessage({ id: 'password' })}
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
               onChange={e => setPassword(e.target.value)}
             />
             <Button
@@ -100,17 +111,17 @@ export const SignIn = () => {
               variant="contained"
               sx={{ mt: 2, mb: 2 }}
             >
-              Sign In
+              {intl.formatMessage({ id: 'SignIn' })}
             </Button>
             <Grid container>
               <Grid item xs>
                 <Link href={links.user.forgotPassword} variant="body2">
-                  Forgot password?
+                {intl.formatMessage({ id: 'ForgotPassword' })}?
                 </Link>
               </Grid>
               <Grid item>
                 <Link href={links.user.signup} variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {intl.formatMessage({ id: 'DontHaveAnAccountSignUp' })}
                 </Link>
               </Grid>
             </Grid>

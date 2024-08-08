@@ -4,20 +4,24 @@ import { Box, Button, Checkbox, FormControl, InputLabel, MenuItem, Select } from
 import { TMembers } from "../types/members";
 import { TBooks } from "../types/books";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+
 import {
-  members as memberHttp,
+  members as membersHttp,
   books as booksHttp,
   transactions as transactionsHttp,
 } from "../helpers/http";
 import dayjs from "dayjs";
 import { links } from "../helpers/links";
+import { useSnackbar } from "../components/SnackbarComponent";
+import { useIntl } from "react-intl";
 
 let navigatePage = '/transactions';
 
 export const EditTransaction = () => {
+  const intl = useIntl();
   const params = useParams();
   const navigate = useNavigate();
+  const { showSnackbar, setIsLoading } = useSnackbar();
 
   const [members, setMembers] = useState<TMembers>([]);
   const [books, setBooks] = useState<TBooks>([]);
@@ -30,28 +34,28 @@ export const EditTransaction = () => {
 
   const cancel = () => navigate(-1);
 
-  const _books = useQuery({
-    queryKey: ['books'],
-    queryFn: booksHttp.fetch
-  });
+  const load = async ({ id }: { id: string }) => {
+    setIsLoading(true);
+    try {
+      let _transaction = await transactionsHttp.getById(id);
+      let _members = await membersHttp.fetch();
+      let _books = await booksHttp.fetch();
 
-  const _members = useQuery({
-    queryKey: ['members'],
-    queryFn: memberHttp.fetch
-  });
+      setMembers(_members);
+      setBooks(_books);
 
-  const load = ({ id }: { id: string }) => transactionsHttp.getById(id)
-    .then(d => {
-      if (d.error) {
-        alert(d.error.message);
-        navigate(links.transactions.list)
-      }
-      setBookId(d.bookId);
-      setMemberId(d.memberId);
-      setDateOfTransaction(d.dateOfTransaction);
-      setDateOfReturn(d.dateOfReturn);
-      setIsReturned(d.isReturned);
-    })
+      setBookId(_transaction.bookId);
+      setMemberId(_transaction.memberId);
+      setDateOfTransaction(_transaction.dateOfTransaction);
+      setDateOfReturn(_transaction.dateOfReturn);
+      setIsReturned(_transaction.isReturned);
+
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const save = () => transactionsHttp.save({
     id: params.id, data: {
@@ -62,7 +66,7 @@ export const EditTransaction = () => {
       isReturned,
     }
   }).then(() => {
-    alert('Successfully updated');
+    showSnackbar(intl.formatMessage({id: 'TransactionSuccessfullyUpdated'}));
     navigate(navigatePage)
   });
 
@@ -70,13 +74,6 @@ export const EditTransaction = () => {
     if ((params.id) && (params.id !== 'new')) load({ id: params.id })
   }, [params.id])
 
-  useEffect(() => {
-    if (_books.data) setBooks(_books.data);
-  }, [_books.data])
-
-  useEffect(() => {
-    if (_members.data) setMembers(_members.data);
-  }, [_members.data])
 
   return (
     <Box
@@ -88,16 +85,19 @@ export const EditTransaction = () => {
         margin: 'auto',
       }}
     >
-      <h1>Edit/Add Transaction</h1>
+      <h1>{intl.formatMessage({id: 'editAddTransaction'})}</h1>
 
       <DatePicker
-        label="Transaction Date"
+        label={intl.formatMessage({id: 'TransactionDate'})}
         date={dayjs(dateOfTransaction) || dayjs()}
         setDate={date => setDateOfTransaction(date)}
       />
 
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Select a member</InputLabel>
+        <InputLabel id="demo-simple-select-label">
+        {intl.formatMessage({id: 'SelectAMember'})}
+        
+        </InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -106,7 +106,7 @@ export const EditTransaction = () => {
           onChange={e => setMemberId(e.target.value)}
         >
           {members.map(m => (
-            <MenuItem 
+            <MenuItem
               key={m.id}
               value={m.id}
             >
@@ -117,7 +117,9 @@ export const EditTransaction = () => {
       </FormControl>
 
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Select a book</InputLabel>
+        <InputLabel id="demo-simple-select-label">
+        {intl.formatMessage({id: 'SelectABook'})}
+        </InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -135,7 +137,7 @@ export const EditTransaction = () => {
       </FormControl>
 
       <DatePicker
-        label="Return date"
+        label={intl.formatMessage({id: 'DateOfReturn'})}
         date={dayjs(dateOfReturn) || dayjs()}
         setDate={date => setDateOfReturn(date)}
       />
@@ -145,7 +147,9 @@ export const EditTransaction = () => {
           onChange={e => setIsReturned(e.target.checked)}
           checked={isReturned}
         />
-        <span>Is Returned</span>
+        <span>
+          {intl.formatMessage({id: 'isReturned'})}
+        </span>
       </div>
 
       <Box

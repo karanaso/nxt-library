@@ -3,82 +3,67 @@ import { useEffect, useState } from "react";
 import { TTransactions, TTransaction } from "../types/transactions";
 import { Add, CheckBox, Delete, Edit } from "@mui/icons-material";
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { TMember } from "../types/members";
-import { TBook } from "../types/books";
-import dayjs from "dayjs";
-import 'dayjs/locale/el';
+import { TMember, TMembers } from "../types/members";
+import { TBook, TBooks } from "../types/books";
 import { DataTable } from "../components/DataTable";
-import { LoadingState } from "../components/LoadingBackdrop";
 import {
-  members as memberHttp,
+  members as membersHttp,
   books as booksHttp,
   transactions as transactionHttp,
 } from "../helpers/http";
 import { links } from "../helpers/links";
+import { useSnackbar } from "../components/SnackbarComponent";
+
+import dayjs from "dayjs";
+import 'dayjs/locale/el';
+import { useIntl } from "react-intl";
 
 export const ListTransactions = () => {
+  const intl = useIntl();
   const params = useParams();
-  console.log(params);
+  const { setIsLoading } = useSnackbar();
+
   const [transactions, setTransactions] = useState<TTransactions>([]);
   const [pendingItemsOnly, setPendingItemsOnly] = useState(false);
+  const [members, setMembers] = useState<TMembers>([]);
+  const [books, setBooks] = useState<TBooks>([]);
 
-  const _transactions = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => {
-      if (params.memberOrBook === 'member') {
-        return transactionHttp.query(
-          `?filters[memberId][$eq]=${params.id}`
-        )
-      }
-      if (params.memberOrBook === 'book') {
-        return transactionHttp.query(
-          `?filters[bookId][$eq]=${params.id}`
-        )
-      }
-      if (pendingItemsOnly) {
-        return transactionHttp.query('?filters[isReturned][$eq]=false')
-      }
-      return transactionHttp.fetch()
-    }
-  },);
-
-  const books = useQuery({
-    queryKey: ['books'],
-    queryFn: booksHttp.fetch
-  });
-
-  const members = useQuery({
-    queryKey: ['members'],
-    queryFn: memberHttp.fetch
-  });
 
   useEffect(() => {
-    if (_transactions.data) setTransactions(_transactions.data);
-  }, [_transactions.data]);
+    setIsLoading(true);
 
-  useEffect(() => {
-    _transactions.refetch();
-  }, [pendingItemsOnly]);
+    Promise.all([
+      membersHttp.fetch(),
+      booksHttp.fetch(),
+      transactionHttp.fetch(),
+    ]).then(([members, books, transactions]) => {
+      setMembers(members);
+      setBooks(books);
+      setTransactions(transactions);
+      setIsLoading(false);
+    })
+  }, []);
 
-  useEffect(() => {
-    _transactions.refetch();
-  }, [params])
-
-
+  
   const findMemberById = ({ id }: { id: string }) => {
-    if (!members.data) return 'Loading...';
-    const member: TMember = members.data.find((m: TMember) => m.id.toString() === id);
-    return member.firstName + ' ' + member.lastName;
+    if (!members) return intl.formatMessage({ id: 'loading' });
+    const member: TMember | undefined = members.find((m: TMember) => m.id === id);
+    if (member) {
+      return member.firstName + ' ' + member.lastName;
+    } else {
+      return 'Not found';
+    }
   };
 
   const findBookById = ({ id }: { id: string }) => {
-    if (!books.data) return 'Loading...';
-    const book: TBook = books.data.find((book: TBook) => book.id.toString() === id);
-    return book.title;
+    if (!books) return intl.formatMessage({ id: 'loading' });
+    const book: TBook | undefined = books.find((book: TBook) => book.id === id);
+    if (book) {
+      return book.title;
+    } else {
+      return intl.formatMessage({ id: 'notFound' })
+    }
   };
-
-  if (_transactions.isPending) return <LoadingState />;
 
   return (
     <div>
@@ -99,12 +84,24 @@ export const ListTransactions = () => {
             alignItems: "center",
           }}
         >
-          <h1>List transactions (total: {transactions.length})</h1>
+          <h1>
+            {intl.formatMessage({ id: 'listTransactions' })}
+            <span style={{
+              fontSize: '10pt',
+              marginLeft: '1rem'
+            }}>
+              (
+                {intl.formatMessage({ id: 'total' })}
+                &nbsp;
+                {transactions.length}
+              )
+            </span>
+          </h1>
           <Box>
             <Button
               onClick={() => setPendingItemsOnly(!pendingItemsOnly)}
             >
-              Σε εκρεμμότητα
+              {intl.formatMessage({ id: 'pending' })}
               {pendingItemsOnly && <CheckBox />}
             </Button>
             <Link to={links.transactions.new}>
@@ -123,16 +120,18 @@ export const ListTransactions = () => {
             memberName: findMemberById({ id: t.memberId }),
             dateOfReturn: dayjs(t.dateOfReturn).format('DD-MM-YYYY'),
             dateOfTransaction: dayjs(t.dateOfTransaction).format('DD-MM-YYYY'),
-            isReturned: t.isReturned ? 'Yes' : 'No',
+            isReturned: t.isReturned 
+              ? intl.formatMessage({ id: 'Yes' }) 
+              : intl.formatMessage({ id: 'No' }),
           }))}
           columns={[
             {
               field: 'memberName',
-              headerName: 'Member',
+              headerName: intl.formatMessage({id: 'Member'}),
               width: 230,
               renderCell: (params) => (
                 <span>
-                  <Link to={'/members/' + params.row.bookId}>
+                  <Link to={'/members/' + params.row.memberId}>
                     <IconButton>
                       <Edit />
                     </IconButton>
@@ -148,7 +147,7 @@ export const ListTransactions = () => {
             },
             {
               field: 'bookName',
-              headerName: 'Book',
+              headerName: intl.formatMessage({id: 'Book'}),
               width: 130,
               renderCell: (params) => (
                 <span>
@@ -168,11 +167,19 @@ export const ListTransactions = () => {
             },
             {
               field: 'dateOfReturn',
-              headerName: 'Date of return',
+              headerName: intl.formatMessage({id: 'DateOfReturn'}),
+              width: 180
+            },
+            { 
+              field: 'dateOfTransaction', 
+              headerName: intl.formatMessage({id: 'DateOfTransaction'}),
               width: 130
             },
-            { field: 'dateOfTransaction', headerName: 'Date of Transaction', width: 130 },
-            { field: 'isReturned', headerName: 'Returned', width: 130 },
+            { 
+              field: 'isReturned', 
+              headerName: intl.formatMessage({id: 'isReturned'}),
+              width: 130
+            },
             {
               field: 'options',
               headerName: '',

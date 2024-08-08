@@ -14,29 +14,38 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
 import { links } from '../helpers/links';
+import { FormattedMessage, useIntl, } from 'react-intl';
 
-const routes = [
-  {
-    path: '/',
-    title: 'Home',
-  },
-  {
-    path: '/members',
-    title: 'Members',
-  },
-  {
-    path: '/books',
-    title: 'Books',
-  },
-  {
-    path: '/transactions',
-    title: 'Transactions',
-  }
-]
 
-const settings = ['Profile', 'Account', 'Dashboard'];
+
 
 function ResponsiveAppBar() {
+  const intl = useIntl();
+  const settings = [
+    intl.formatMessage({id: 'Profile' }),
+    intl.formatMessage({id: 'Account' }),
+    intl.formatMessage({id: 'Dashboard'}),
+  ];
+
+  const routes = [
+    {
+      path: '/',
+      title: intl.formatMessage({ id: 'home'}),
+    },
+    {
+      path: '/members',
+      title: intl.formatMessage({id: 'Members' }),
+    },
+    {
+      path: '/books',
+      title: intl.formatMessage({id: 'Books' }),
+    },
+    {
+      path: '/transactions',
+      title: intl.formatMessage({id: 'Transactions' }),
+    }
+  ]
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -179,7 +188,9 @@ function ResponsiveAppBar() {
               ))}
                 <MenuItem key="logout" onClick={handleCloseUserMenu}>
                   <Link to={links.user.signout}>
-                    <Typography textAlign="center">Logout</Typography>
+                    <Typography textAlign="center">
+                      {intl.formatMessage({ id: 'Logout'})}
+                    </Typography>
                   </Link>
                 </MenuItem>
             </Menu>

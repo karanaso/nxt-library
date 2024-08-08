@@ -1,31 +1,25 @@
 import { Box, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { TBook, TBooks } from "../types/books";
-import { Add, Delete, Edit, PlusOne } from "@mui/icons-material";
+import { TBooks } from "../types/books";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { DataTable } from "../components/DataTable";
 import { books as booksHttp } from "../helpers/http";
-import { useQuery } from "@tanstack/react-query";
-import { LoadingState } from "../components/LoadingBackdrop";
 import { links } from "../helpers/links";
+import { useSnackbar } from '../components/SnackbarComponent';
+import { useIntl } from "react-intl";
 
 export const ListBooks = () => {
+  const intl = useIntl();
   const [books, setBooks] = useState<TBooks>([]);
-
-  const {isPending, isError, data, error} = useQuery({
-    queryKey: ['books'],
-    queryFn: booksHttp.fetch
-  });
+  const { setIsLoading } = useSnackbar();
 
   useEffect(() => {
-    if (data) setBooks(data);
-  }, [data]);
-
-  if (isPending) return <LoadingState />
-
-  if (isError) {
-    return <span>Error: {error.message}</span>
-  }
+    setIsLoading(true);
+    booksHttp.fetch()
+      .then(d => setBooks(d))
+      .then(() => setIsLoading(false))
+  }, []);
 
   return (
     <div>
@@ -46,7 +40,19 @@ export const ListBooks = () => {
             alignItems: "center",
           }}
         >
-          <h1>List books (total: {books.length})</h1>
+          <h1>
+            {intl.formatMessage({ id: 'listBooks' })}
+            <span style={{
+              fontSize: '10pt',
+              marginLeft: '1rem'
+            }}>
+              (
+                {intl.formatMessage({ id: 'total' })}
+                &nbsp;
+                {books.length}
+              )
+            </span>
+          </h1>
           <Link to={links.books.new}>
             <IconButton>
               <Add />
@@ -64,7 +70,7 @@ export const ListBooks = () => {
           columns={[
             { 
               field: 'title',
-              headerName: 'Title',
+              headerName: intl.formatMessage({ id: 'Title' }),
               width: 130,
               renderCell: (params) => (
                 <Link to={links.transactions.byBemberId(
@@ -75,9 +81,9 @@ export const ListBooks = () => {
                 </Link>
               )
             },
-            { field: 'authors', headerName: 'Authors', width: 130 },
-            { field: 'dateOfPublish', headerName: 'Date of publish', width: 130 },
-            { field: 'pages', headerName: 'No. Pages', align: 'center', headerAlign: 'center', width: 130 },
+            { field: 'authors', headerName: intl.formatMessage({ id: 'Authors' }), width: 130 },
+            { field: 'dateOfPublish', headerName: intl.formatMessage({ id:  'DateOfPublish' }), width: 130 },
+            { field: 'pages', headerName: intl.formatMessage({ id: 'NoPages' }), align: 'center', headerAlign: 'center', width: 130 },
             {
               field: 'options',
               headerName: '',
